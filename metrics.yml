@@ -1,0 +1,38 @@
+name: Refresh Developer Metrics
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # Runs daily at midnight UTC
+  workflow_dispatch:        # Allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install @octokit/graphql
+
+      - name: Fetch GitHub Metrics
+        env:
+          GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
+          ORG_NAME: iPivotTechnology
+        run: node scripts/fetch-metrics.js
+
+      - name: Commit updated metrics data
+        run: |
+          git config user.name  "metrics-bot"
+          git config user.email "metrics-bot@ipivot.tech"
+          git add data/metrics.json
+          git diff --staged --quiet || git commit -m "chore: refresh metrics [skip ci]"
+          git push

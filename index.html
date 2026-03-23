@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iPivot Technology — Developer Metrics Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:          #07090f;
+      --surface-1:   #0e1320;
+      --surface-2:   #141b2e;
+      --surface-3:   rgba(255,255,255,0.04);
+      --border:      rgba(255,255,255,0.07);
+      --accent:      #3b82f6;
+      --accent-glow: rgba(59,130,246,0.25);
+      --accent-2:    #8b5cf6;
+      --accent-3:    #10b981;
+      --accent-4:    #f59e0b;
+      --danger:      #ef4444;
+      --text-primary: #f0f4ff;
+      --text-secondary: #8b96b0;
+      --text-muted:  #4a5568;
+      --font-display: 'Syne', sans-serif;
+      --font-body:   'DM Sans', sans-serif;
+      --font-mono:   'DM Mono', monospace;
+      --r-sm: 6px; --r-md: 12px; --r-lg: 18px; --r-xl: 28px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.4;
+    }
+
+    /* ─── AMBIENT GLOW ─── */
+    .glow-bg {
+      position: fixed; pointer-events: none; z-index: 0;
+      border-radius: 50%; filter: blur(120px); opacity: 0.12;
+    }
+    .glow-bg--a { width: 700px; height: 700px; background: var(--accent); top: -200px; left: -100px; }
+    .glow-bg--b { width: 500px; height: 500px; background: var(--accent-2); bottom: -100px; right: -100px; }
+
+    /* ─── LAYOUT ─── */
+    .shell { position: relative; z-index: 1; }
+
+    /* ─── TOPBAR ─── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
+      background: rgba(14,19,32,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar__brand { display: flex; align-items: center; gap: 0.75rem; }
+    .topbar__logo {
+      width: 34px; height: 34px; border-radius: var(--r-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: 800; font-size: 0.9rem; color: #fff;
+    }
+    .topbar__name {
+      font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+    .topbar__name span { color: var(--accent); }
+    .topbar__right { display: flex; align-items: center; gap: 1rem; }
+    .topbar__sprint {
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-full);
+      padding: 0.3rem 0.9rem;
+    }
+    .badge-live {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-family: var(--font-mono);
+      color: var(--accent-3); letter-spacing: 0.06em;
+    }
+    .badge-live::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent-3);
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(16,185,129,0.2)} 50%{box-shadow:0 0 0 6px rgba(16,185,129,0.05)} }
+
+    /* ─── MAIN CONTENT ─── */
+    .main { padding: 2rem 2rem 4rem; max-width: 1440px; margin: 0 auto; }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header { margin-bottom: 2rem; }
+    .page-header__eyebrow {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .page-header__title {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      letter-spacing: -0.03em; line-height: 1.1;
+    }
+    .page-header__title span { color: var(--accent); }
+    .page-header__sub { color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.4rem; }
+
+    /* ─── TABS ─── */
+    .tabs { display: flex; gap: 0.25rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .tab {
+      font-family: var(--font-body); font-size: 0.82rem; font-weight: 500;
+      padding: 0.45rem 1rem; border-radius: var(--r-full);
+      border: 1px solid var(--border);
+      background: transparent; color: var(--text-secondary);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.15); }
+    .tab.active {
+      background: var(--accent); border-color: var(--accent);
+      color: #fff; box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ─── KPI STRIP ─── */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .kpi-card {
+      background: var(--surface-1); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 1.25rem 1.4rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+    .kpi-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--card-accent, var(--accent));
+    }
+    .kpi-card__icon { font-size: 1.3rem; margin-bottom: 0.7rem; }
+    .kpi-card__label { font-size: 0.72rem; color: var(--text-secondary); font-family: var(--font-mono); letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+    .kpi-card__value { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+    .kpi-card__delta {
+      margin-top: 0.5rem; font-size: 0.75rem; font-family: var(--font-mono);
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .delta-up { color: var(--accent-3); } .delta-down { color: var(--danger); }
+
+    /* ─── GRID LAYOUTS ─── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .grid-7-5 { display: grid; grid-template-columns: 7fr 5fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .grid-5-7 { display: grid; grid-template-columns: 5fr 7fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    @media (max-width: 900px) { .grid-2,.grid-3,.grid-7-5,.grid-5-7 { grid-template-columns: 1fr; } }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--surface-1); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 1.4rem;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+    .card__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .card__title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; }
+    .card__badge {
+      font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em;
+      padding: 0.25rem 0.6rem; border-radius: var(--r-full);
+      background: var(--surface-2); border: 1px solid var(--border); color: var(--text-secondary);
+    }
+    .card__canvas { width: 100%; }
+
+    /* ─── DEVELOPER TABLE ─── */
+    .dev-table { width: 100%; border-collapse: collapse; }
+    .dev-table th {
+      font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted); font-weight: 500;
+      padding: 0.5rem 0.75rem; text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .dev-table td { padding: 0.85rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; vertical-align: middle; }
+    .dev-table tr:last-child td { border-bottom: none; }
+    .dev-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .dev-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; font-family: var(--font-display);
+      flex-shrink: 0;
+    }
+    .dev-name-cell { display: flex; align-items: center; gap: 0.7rem; }
+    .dev-name { font-weight: 600; font-size: 0.85rem; }
+    .dev-role { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+    .score-bar { display: flex; align-items: center; gap: 0.6rem; }
+    .score-bar__track { flex: 1; height: 5px; background: var(--surface-2); border-radius: 9999px; overflow: hidden; }
+    .score-bar__fill { height: 100%; border-radius: 9999px; transition: width 1s cubic-bezier(0.16,1,0.3,1); }
+    .score-bar__num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); min-width: 32px; text-align: right; }
+
+    .chip {
+      display: inline-block; font-size: 0.65rem; font-family: var(--font-mono);
+      padding: 0.2rem 0.55rem; border-radius: var(--r-full); font-weight: 500;
+    }
+    .chip-green { background: rgba(16,185,129,0.12); color: var(--accent-3); border: 1px solid rgba(16,185,129,0.2); }
+    .chip-blue  { background: rgba(59,130,246,0.12); color: var(--accent); border: 1px solid rgba(59,130,246,0.2); }
+    .chip-amber { background: rgba(245,158,11,0.12); color: var(--accent-4); border: 1px solid rgba(245,158,11,0.2); }
+    .chip-red   { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+
+    /* ─── DORA CARDS ─── */
+    .dora-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
+    @media (max-width: 900px) { .dora-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .dora-grid { grid-template-columns: 1fr; } }
+
+    .dora-card {
+      background: var(--surface-1); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 1.4rem;
+      position: relative; overflow: hidden;
+    }
+    .dora-card__ring {
+      position: absolute; top: -30px; right: -30px;
+      width: 90px; height: 90px; border-radius: 50%;
+      border: 2px solid; opacity: 0.12;
+    }
+    .dora-card__level {
+      display: inline-block; font-size: 0.62rem; font-family: var(--font-mono);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; border-radius: var(--r-full);
+      margin-bottom: 0.8rem;
+    }
+    .level-elite { background: rgba(16,185,129,0.12); color: var(--accent-3); border: 1px solid rgba(16,185,129,0.25); }
+    .level-high  { background: rgba(59,130,246,0.12); color: var(--accent); border: 1px solid rgba(59,130,246,0.25); }
+    .level-med   { background: rgba(245,158,11,0.12); color: var(--accent-4); border: 1px solid rgba(245,158,11,0.25); }
+    .dora-card__label { font-size: 0.72rem; color: var(--text-secondary); font-family: var(--font-mono); margin-bottom: 0.3rem; }
+    .dora-card__value { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; }
+    .dora-card__desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+    /* ─── TIMELINE / ACTIVITY ─── */
+    .activity-list { display: flex; flex-direction: column; gap: 0; }
+    .activity-item {
+      display: flex; gap: 1rem; padding: 0.9rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-top: 6px; flex-shrink: 0;
+    }
+    .activity-line { display: flex; flex-direction: column; gap: 0.1rem; flex: 1; min-width: 0; }
+    .activity-text { font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .activity-text strong { color: var(--text-primary); }
+    .activity-meta { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); }
+
+    /* ─── HEALTH GAUGES ─── */
+    .gauge-row { display: flex; flex-direction: column; gap: 1rem; }
+    .gauge-item { display: flex; flex-direction: column; gap: 0.4rem; }
+    .gauge-header { display: flex; justify-content: space-between; align-items: center; }
+    .gauge-label { font-size: 0.8rem; color: var(--text-secondary); }
+    .gauge-value { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-primary); }
+    .gauge-track { height: 8px; background: var(--surface-2); border-radius: 9999px; overflow: hidden; }
+    .gauge-fill { height: 100%; border-radius: 9999px; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+
+    /* ─── SPRINT BOARD ─── */
+    .sprint-cols { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; }
+    @media (max-width: 700px) { .sprint-cols { grid-template-columns: 1fr 1fr; } }
+    .sprint-col__title {
+      font-family: var(--font-mono); font-size: 0.67rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-muted);
+      margin-bottom: 0.75rem; display: flex; justify-content: space-between;
+    }
+    .sprint-col__count {
+      background: var(--surface-2); border-radius: var(--r-full);
+      width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; color: var(--text-secondary);
+    }
+    .sprint-task {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--r-md); padding: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .sprint-task__id { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+    .sprint-task__name { font-size: 0.78rem; line-height: 1.4; margin-bottom: 0.5rem; }
+    .sprint-task__footer { display: flex; align-items: center; justify-content: space-between; }
+    .sprint-task__pts { font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent); }
+    .sprint-task__avatar { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 700; }
+
+    /* ─── SETUP INSTRUCTIONS ─── */
+    .setup-card {
+      background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.05));
+      border: 1px solid rgba(59,130,246,0.2); border-radius: var(--r-lg);
+      padding: 1.5rem 1.75rem; margin-bottom: 1.25rem;
+    }
+    .setup-card h3 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 0.75rem; }
+    .setup-steps { display: flex; flex-direction: column; gap: 0.6rem; }
+    .setup-step { display: flex; gap: 0.75rem; align-items: flex-start; }
+    .setup-step__num {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      background: var(--accent); color: #fff; font-size: 0.65rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; margin-top: 1px;
+    }
+    .setup-step__text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+    .setup-step__text code {
+      font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent);
+      background: rgba(59,130,246,0.1); padding: 0.1rem 0.35rem; border-radius: 4px;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      text-align: center; padding: 2rem; border-top: 1px solid var(--border);
+      font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted);
+    }
+    .footer span { color: var(--accent); }
+
+    /* ─── FADE-IN ANIMATION ─── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .kpi-card, .card, .dora-card { animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+    .kpi-card:nth-child(1){animation-delay:0.05s} .kpi-card:nth-child(2){animation-delay:0.1s}
+    .kpi-card:nth-child(3){animation-delay:0.15s} .kpi-card:nth-child(4){animation-delay:0.2s}
+    .kpi-card:nth-child(5){animation-delay:0.25s} .kpi-card:nth-child(6){animation-delay:0.3s}
+    .r-full { border-radius: var(--r-full); }
+  </style>
+</head>
+<body>
+
+<div class="glow-bg glow-bg--a"></div>
+<div class="glow-bg glow-bg--b"></div>
+
+<div class="shell">
+
+  <!-- ── TOPBAR ── -->
+  <nav class="topbar">
+    <div class="topbar__brand">
+      <div class="topbar__logo">iP</div>
+      <div class="topbar__name"><span>iPivot</span> Technology</div>
+    </div>
+    <div class="topbar__right">
+      <div class="topbar__sprint">Sprint 12 · Mar 10–24, 2025</div>
+      <div class="badge-live">LIVE</div>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header__eyebrow">⬡ Engineering Intelligence</div>
+      <h1 class="page-header__title">Developer <span>Metrics</span> Dashboard</h1>
+      <p class="page-header__sub">Track velocity, quality and collaboration across your team — powered by GitHub Projects</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showView('overview')">Overview</button>
+      <button class="tab" onclick="showView('developers')">Developers</button>
+      <button class="tab" onclick="showView('dora')">DORA Metrics</button>
+      <button class="tab" onclick="showView('sprint')">Sprint Board</button>
+      <button class="tab" onclick="showView('setup')">GitHub Setup</button>
+    </div>
+
+    <!-- ══ OVERVIEW VIEW ══ -->
+    <div id="view-overview">
+
+      <div class="section-label">Key Performance Indicators</div>
+      <div class="kpi-grid">
+        <div class="kpi-card" style="--card-accent:var(--accent)">
+          <div class="kpi-card__icon">⚡</div>
+          <div class="kpi-card__label">AVG CYCLE TIME</div>
+          <div class="kpi-card__value">1.8<span style="font-size:1rem;color:var(--text-secondary)">d</span></div>
+          <div class="kpi-card__delta delta-up">▲ 22% faster than last sprint</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--accent-2)">
+          <div class="kpi-card__icon">🚀</div>
+          <div class="kpi-card__label">DEPLOYMENTS</div>
+          <div class="kpi-card__value">14</div>
+          <div class="kpi-card__delta delta-up">▲ 4 more than Sprint 11</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--accent-3)">
+          <div class="kpi-card__icon">✅</div>
+          <div class="kpi-card__label">TASKS CLOSED</div>
+          <div class="kpi-card__value">47</div>
+          <div class="kpi-card__delta delta-up">▲ Sprint 11 was 39</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--accent-4)">
+          <div class="kpi-card__icon">🔀</div>
+          <div class="kpi-card__label">PRs MERGED</div>
+          <div class="kpi-card__value">31</div>
+          <div class="kpi-card__delta delta-up">▲ 94% merge rate</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--danger)">
+          <div class="kpi-card__icon">🐛</div>
+          <div class="kpi-card__label">BUG ESCAPE RATE</div>
+          <div class="kpi-card__value">4.2<span style="font-size:1rem;color:var(--text-secondary)">%</span></div>
+          <div class="kpi-card__delta delta-up">▼ Down from 6.1%</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--accent-3)">
+          <div class="kpi-card__icon">🛡️</div>
+          <div class="kpi-card__label">TEST COVERAGE</div>
+          <div class="kpi-card__value">78<span style="font-size:1rem;color:var(--text-secondary)">%</span></div>
+          <div class="kpi-card__delta delta-up">▲ +5% from Sprint 11</div>
+        </div>
+      </div>
+
+      <div class="grid-7-5">
+        <!-- Velocity Chart -->
+        <div class="card">
+          <div class="card__header">
+            <span class="card__title">Sprint Velocity — Tasks Closed</span>
+            <span class="card__badge">LAST 6 SPRINTS</span>
+          </div>
+          <canvas id="velocityChart" height="160"></canvas>
+        </div>
+        <!-- Activity Feed -->
+        <div class="card">
+          <div class="card__header">
+            <span class="card__title">Recent Activity</span>
+            <span class="card__badge">LIVE</span>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--accent-3)"></div>
+              <div class="activity-line">
+                <div class="activity-text"><strong>Aditya K.</strong> merged PR #84 — Auth refactor</div>
+                <div class="activity-meta">3 min ago · +210 −45 lines</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--accent)"></div>
+              <div class="activity-line">
+                <div class="activity-text"><strong>Priya M.</strong> opened PR #85 — Dashboard API</div>
+                <div class="activity-meta">18 min ago · awaiting review</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--accent-2)"></div>
+              <div class="activity-line">
+                <div class="activity-text"><strong>Ravi S.</strong> closed Issue #117 — Mobile nav bug</div>
+                <div class="activity-meta">42 min ago · cycle time 1.2d</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--accent-4)"></div>
+              <div class="activity-line">
+                <div class="activity-text"><strong>Neha T.</strong> deployed to production 🎉</div>
+                <div class="activity-meta">1 hr ago · v2.4.1</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--accent-3)"></div>
+              <div class="activity-line">
+                <div class="activity-text"><strong>Kiran P.</strong> reviewed PR #83 — LGTM ✓</div>
+                <div class="activity-meta">2 hrs ago · turnaround 3.5h</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Cycle Time Trend -->
+        <div class="card">
+          <div class="card__header">
+            <span class="card__title">Cycle Time Trend (days)</span>
+            <span class="card__badge">PER SPRINT</span>
+          </div>
+          <canvas id="cycleChart" height="170"></canvas>
+        </div>
+        <!-- PR Health -->
+        <div class="card">
+          <div class="card__header">
+            <span class="card__title">Team Health Gauges</span>
+            <span class="card__badge">THIS SPRINT</span>
+          </div>
+          <div class="gauge-row" style="margin-top:0.5rem">
+            <div class="gauge-item">
+              <div class="gauge-header"><span class="gauge-label">PR Merge Rate</span><span class="gauge-value">94%</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:94%;background:linear-gradient(90deg,var(--accent),var(--accent-2))"></div></div>
+            </div>
+            <div class="gauge-item">
+              <div class="gauge-header"><span class="gauge-label">Test Coverage</span><span class="gauge-value">78%</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:78%;background:linear-gradient(90deg,var(--accent-3),#06b6d4)"></div></div>
+            </div>
+            <div class="gauge-item">
+              <div class="gauge-header"><span class="gauge-label">Review Participation</span><span class="gauge-value">88%</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:88%;background:linear-gradient(90deg,var(--accent-2),#ec4899)"></div></div>
+            </div>
+            <div class="gauge-item">
+              <div class="gauge-header"><span class="gauge-label">Change Failure Rate</span><span class="gauge-value">7%</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:7%;background:var(--danger)"></div></div>
+            </div>
+            <div class="gauge-item">
+              <div class="gauge-header"><span class="gauge-label">Sprint Goal Progress</span><span class="gauge-value">82%</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:82%;background:linear-gradient(90deg,var(--accent-4),#f97316)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DEVELOPERS VIEW ══ -->
+    <div id="view-developers" style="display:none">
+
+      <div class="section-label">Individual Developer Performance</div>
+
+      <div class="card" style="margin-bottom:1.25rem;padding:0">
+        <div style="overflow-x:auto">
+        <table class="dev-table">
+          <thead>
+            <tr>
+              <th>Developer</th>
+              <th>Tasks Closed</th>
+              <th>PRs Merged</th>
+              <th>Avg Cycle Time</th>
+              <th>Review Turnaround</th>
+              <th>Bug Rate</th>
+              <th>Efficiency Score</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="devTableBody"></tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card__header"><span class="card__title">Tasks Closed per Developer</span></div>
+          <canvas id="devTasksChart" height="220"></canvas>
+        </div>
+        <div class="card">
+          <div class="card__header"><span class="card__title">PR Merge Rate per Developer</span></div>
+          <canvas id="devPRChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header"><span class="card__title">Cycle Time Comparison (days per developer)</span></div>
+        <canvas id="devCycleChart" height="130"></canvas>
+      </div>
+    </div>
+
+    <!-- ══ DORA VIEW ══ -->
+    <div id="view-dora" style="display:none">
+
+      <div class="section-label">DORA Metrics — Industry Standard Benchmarks</div>
+
+      <div class="dora-grid">
+        <div class="dora-card">
+          <div class="dora-card__ring" style="border-color:var(--accent-3)"></div>
+          <div class="dora-card__level level-elite">ELITE</div>
+          <div class="dora-card__label">DEPLOYMENT FREQUENCY</div>
+          <div class="dora-card__value" style="color:var(--accent-3)">Daily+</div>
+          <div class="dora-card__desc">14 deploys this sprint (avg 1.1/day)</div>
+        </div>
+        <div class="dora-card">
+          <div class="dora-card__ring" style="border-color:var(--accent)"></div>
+          <div class="dora-card__level level-high">HIGH</div>
+          <div class="dora-card__label">LEAD TIME FOR CHANGES</div>
+          <div class="dora-card__value" style="color:var(--accent)">1.8d</div>
+          <div class="dora-card__desc">Commit to production in under 2 days</div>
+        </div>
+        <div class="dora-card">
+          <div class="dora-card__ring" style="border-color:var(--accent-3)"></div>
+          <div class="dora-card__level level-elite">ELITE</div>
+          <div class="dora-card__label">CHANGE FAILURE RATE</div>
+          <div class="dora-card__value" style="color:var(--accent-3)">7%</div>
+          <div class="dora-card__desc">Below 15% threshold for Elite</div>
+        </div>
+        <div class="dora-card">
+          <div class="dora-card__ring" style="border-color:var(--accent-4)"></div>
+          <div class="dora-card__level level-med">MEDIUM</div>
+          <div class="dora-card__label">MEAN TIME TO RESTORE</div>
+          <div class="dora-card__value" style="color:var(--accent-4)">4.2h</div>
+          <div class="dora-card__desc">Target: under 1 hour for Elite tier</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card__header"><span class="card__title">Deployment Frequency (per week)</span></div>
+          <canvas id="doraDeployChart" height="200"></canvas>
+        </div>
+        <div class="card">
+          <div class="card__header"><span class="card__title">Lead Time & MTTR Trend (hours)</span></div>
+          <canvas id="doraLeadChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header"><span class="card__title">DORA Benchmark Comparison</span><span class="card__badge">iPivot vs Industry</span></div>
+        <canvas id="doraRadarChart" height="110"></canvas>
+      </div>
+    </div>
+
+    <!-- ══ SPRINT VIEW ══ -->
+    <div id="view-sprint" style="display:none">
+
+      <div class="section-label">Sprint 12 — Active Board</div>
+
+      <div class="kpi-grid" style="margin-bottom:1.5rem">
+        <div class="kpi-card" style="--card-accent:var(--accent)">
+          <div class="kpi-card__label">TOTAL ISSUES</div>
+          <div class="kpi-card__value">52</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--text-muted)">
+          <div class="kpi-card__label">BACKLOG</div>
+          <div class="kpi-card__value">8</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--accent-4)">
+          <div class="kpi-card__label">IN PROGRESS</div>
+          <div class="kpi-card__value">12</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--accent)">
+          <div class="kpi-card__label">IN REVIEW</div>
+          <div class="kpi-card__value">7</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--accent-3)">
+          <div class="kpi-card__label">DONE</div>
+          <div class="kpi-card__value">25</div>
+        </div>
+        <div class="kpi-card" style="--card-accent:var(--accent-2)">
+          <div class="kpi-card__label">STORY POINTS</div>
+          <div class="kpi-card__value">78<span style="font-size:1rem;color:var(--text-secondary)">/95</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__header"><span class="card__title">Sprint Board</span><span class="card__badge">SPRINT 12</span></div>
+        <div class="sprint-cols" id="sprintBoard"></div>
+      </div>
+
+      <div class="grid-2" style="margin-top:1.25rem">
+        <div class="card">
+          <div class="card__header"><span class="card__title">Burndown Chart</span></div>
+          <canvas id="burndownChart" height="190"></canvas>
+        </div>
+        <div class="card">
+          <div class="card__header"><span class="card__title">Issue Distribution by Label</span></div>
+          <canvas id="labelChart" height="190"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SETUP VIEW ══ -->
+    <div id="view-setup" style="display:none">
+
+      <div class="section-label">GitHub Integration Setup Guide</div>
+
+      <div class="setup-card">
+        <h3>🔌 Connect GitHub Projects to This Dashboard</h3>
+        <div class="setup-steps">
+          <div class="setup-step">
+            <div class="setup-step__num">1</div>
+            <div class="setup-step__text">Generate a <strong>Personal Access Token</strong> in GitHub → Settings → Developer Settings → Tokens (Classic). Scopes needed: <code>repo</code>, <code>read:org</code>, <code>project</code></div>
+          </div>
+          <div class="setup-step">
+            <div class="setup-step__num">2</div>
+            <div class="setup-step__text">Add token as a GitHub Actions secret: <code>METRICS_TOKEN</code> in your dashboard repo Settings → Secrets</div>
+          </div>
+          <div class="setup-step">
+            <div class="setup-step__num">3</div>
+            <div class="setup-step__text">Use the <strong>GitHub GraphQL API</strong> to query Projects v2 data: endpoint <code>https://api.github.com/graphql</code> — query your org's <code>projectsV2</code> items and fields</div>
+          </div>
+          <div class="setup-step">
+            <div class="setup-step__num">4</div>
+            <div class="setup-step__text">Add a GitHub Actions workflow <code>.github/workflows/metrics.yml</code> to run the data fetch nightly and commit the results as <code>data/metrics.json</code></div>
+          </div>
+          <div class="setup-step">
+            <div class="setup-step__num">5</div>
+            <div class="setup-step__text">This <code>index.html</code> reads <code>data/metrics.json</code> on load and renders real data. Enable GitHub Pages on the <code>main</code> branch root folder — your dashboard goes live at <code>https://iPivotTechnology.github.io/dev-metrics</code></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card__header"><span class="card__title">GitHub Actions Workflow</span><span class="card__badge">metrics.yml</span></div>
+          <pre style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-secondary);line-height:1.6;overflow-x:auto;white-space:pre-wrap">name: Refresh Metrics
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch GitHub Metrics
+        env:
+          GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
+        run: node scripts/fetch-metrics.js
+      - name: Commit data
+        run: |
+          git config user.name "metrics-bot"
+          git add data/metrics.json
+          git commit -m "chore: refresh metrics"
+          git push</pre>
+        </div>
+        <div class="card">
+          <div class="card__header"><span class="card__title">GraphQL Query Example</span><span class="card__badge">Projects v2</span></div>
+          <pre style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-secondary);line-height:1.6;overflow-x:auto;white-space:pre-wrap">query {
+  organization(login: "iPivotTechnology") {
+    projectsV2(first: 5) {
+      nodes {
+        title
+        items(first: 100) {
+          nodes {
+            fieldValues(first: 10) {
+              nodes {
+                ... on ProjectV2ItemFieldTextValue {
+                  text field { name }
+                }
+                ... on ProjectV2ItemFieldSingleSelectValue {
+                  name field { name }
+                }
+              }
+            }
+            content {
+              ... on Issue {
+                title assignees { nodes { login } }
+                closedAt createdAt labels { nodes { name } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <span>iPivot Technology</span> · Developer Metrics Dashboard · Sprint 12 · Powered by GitHub Projects
+  </footer>
+
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const developers = [
+  { name:"Aditya K.",    role:"Backend",  avatar:"AK", color:"#3b82f6", tasks:12, prs:9,  cycleTime:1.4, reviewTime:2.8, bugRate:2.1, score:94 },
+  { name:"Priya M.",     role:"Frontend", avatar:"PM", color:"#8b5cf6", tasks:10, prs:8,  cycleTime:1.9, reviewTime:3.1, bugRate:3.4, score:88 },
+  { name:"Ravi S.",      role:"Full Stack",avatar:"RS",color:"#10b981", tasks:9,  prs:7,  cycleTime:2.1, reviewTime:4.2, bugRate:4.0, score:82 },
+  { name:"Neha T.",      role:"DevOps",   avatar:"NT", color:"#f59e0b", tasks:8,  prs:5,  cycleTime:1.6, reviewTime:2.1, bugRate:1.8, score:91 },
+  { name:"Kiran P.",     role:"Backend",  avatar:"KP", color:"#ec4899", tasks:6,  prs:6,  cycleTime:2.4, reviewTime:5.0, bugRate:5.2, score:74 },
+  { name:"Sanjay R.",    role:"Frontend", avatar:"SR", color:"#06b6d4", tasks:7,  prs:4,  cycleTime:3.1, reviewTime:6.2, bugRate:7.1, score:68 },
+];
+
+// ─── VIEW SWITCHER ───────────────────────────────────────────────────────────
+const views = ['overview','developers','dora','sprint','setup'];
+function showView(id) {
+  views.forEach(v => document.getElementById('view-'+v).style.display = v===id ? '' : 'none');
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', views[i]===id));
+  if(id==='developers') renderDevView();
+  if(id==='dora') renderDoraView();
+  if(id==='sprint') renderSprintView();
+}
+
+// ─── CHART DEFAULTS ──────────────────────────────────────────────────────────
+Chart.defaults.color = '#8b96b0';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 11;
+const gridOpts = { color:'rgba(255,255,255,0.05)', drawBorder:false };
+const noLegend = { display:false };
+
+// ─── OVERVIEW CHARTS ─────────────────────────────────────────────────────────
+const sprints = ['S7','S8','S9','S10','S11','S12'];
+new Chart(document.getElementById('velocityChart'), {
+  type:'bar',
+  data:{
+    labels: sprints,
+    datasets:[
+      { label:'Tasks Closed', data:[28,33,31,38,39,47], backgroundColor:'rgba(59,130,246,0.7)', borderRadius:6, borderSkipped:false },
+      { label:'Story Points', data:[52,61,58,72,74,78], backgroundColor:'rgba(139,92,246,0.4)', borderRadius:6, borderSkipped:false }
+    ]
+  },
+  options:{ responsive:true, plugins:{ legend:{labels:{color:'#8b96b0',boxWidth:10}} }, scales:{ x:{grid:gridOpts}, y:{grid:gridOpts} } }
+});
+
+new Chart(document.getElementById('cycleChart'), {
+  type:'line',
+  data:{
+    labels: sprints,
+    datasets:[{ label:'Avg Cycle Time (d)', data:[3.8,3.4,3.0,2.6,2.3,1.8],
+      borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)',
+      fill:true, tension:0.4, pointRadius:4, pointBackgroundColor:'#3b82f6' }]
+  },
+  options:{ responsive:true, plugins:{legend:noLegend}, scales:{ x:{grid:gridOpts}, y:{grid:gridOpts,min:0} } }
+});
+
+// ─── DEV TABLE ───────────────────────────────────────────────────────────────
+function getScoreColor(s) { return s>=90?'var(--accent-3)':s>=80?'var(--accent)':s>=70?'var(--accent-4)':'var(--danger)'; }
+function getScoreChip(s)  { return s>=90?'chip-green':s>=80?'chip-blue':s>=70?'chip-amber':'chip-red'; }
+function getScoreLabel(s) { return s>=90?'Excellent':s>=80?'Good':s>=70?'Average':'Needs Attn'; }
+
+function renderDevView() {
+  const body = document.getElementById('devTableBody');
+  if(body.innerHTML) return;
+  body.innerHTML = developers.map(d => `
+    <tr>
+      <td><div class="dev-name-cell">
+        <div class="dev-avatar" style="background:${d.color}22;color:${d.color}">${d.avatar}</div>
+        <div><div class="dev-name">${d.name}</div><div class="dev-role">${d.role}</div></div>
+      </div></td>
+      <td style="font-family:var(--font-mono)">${d.tasks}</td>
+      <td style="font-family:var(--font-mono)">${d.prs}</td>
+      <td style="font-family:var(--font-mono)">${d.cycleTime}d</td>
+      <td style="font-family:var(--font-mono)">${d.reviewTime}h</td>
+      <td><span class="chip ${d.bugRate<=3?'chip-green':d.bugRate<=5?'chip-amber':'chip-red'}">${d.bugRate}%</span></td>
+      <td>
+        <div class="score-bar">
+          <div class="score-bar__track"><div class="score-bar__fill" style="width:${d.score}%;background:${getScoreColor(d.score)}"></div></div>
+          <div class="score-bar__num">${d.score}</div>
+        </div>
+      </td>
+      <td><span class="chip ${getScoreChip(d.score)}">${getScoreLabel(d.score)}</span></td>
+    </tr>`).join('');
+
+  const names = developers.map(d=>d.name);
+  const colors = developers.map(d=>d.color+'bb');
+
+  new Chart(document.getElementById('devTasksChart'), {
+    type:'bar', data:{ labels:names, datasets:[{label:'Tasks',data:developers.map(d=>d.tasks),backgroundColor:colors,borderRadius:5,borderSkipped:false}] },
+    options:{ responsive:true,plugins:{legend:noLegend},scales:{x:{grid:gridOpts},y:{grid:gridOpts}} }
+  });
+  new Chart(document.getElementById('devPRChart'), {
+    type:'bar', data:{ labels:names, datasets:[{label:'PRs Merged',data:developers.map(d=>d.prs),backgroundColor:developers.map(d=>d.color+'88'),borderRadius:5,borderSkipped:false}] },
+    options:{ responsive:true,plugins:{legend:noLegend},scales:{x:{grid:gridOpts},y:{grid:gridOpts}} }
+  });
+  new Chart(document.getElementById('devCycleChart'), {
+    type:'bar', data:{ labels:names, datasets:[{label:'Cycle Time (d)',data:developers.map(d=>d.cycleTime),backgroundColor:developers.map(d=>d.color+'aa'),borderRadius:5,borderSkipped:false,barThickness:32}] },
+    options:{ indexAxis:'y',responsive:true,plugins:{legend:noLegend},scales:{x:{grid:gridOpts,max:4},y:{grid:gridOpts}} }
+  });
+}
+
+// ─── DORA CHARTS ─────────────────────────────────────────────────────────────
+function renderDoraView() {
+  if(document.getElementById('doraDeployChart')._rendered) return;
+  document.getElementById('doraDeployChart')._rendered=true;
+  const weeks = ['W1','W2','W3','W4','W5','W6','W7','W8'];
+  new Chart(document.getElementById('doraDeployChart'), {
+    type:'bar', data:{ labels:weeks, datasets:[{label:'Deploys',data:[6,8,5,10,9,11,8,14],backgroundColor:'rgba(16,185,129,0.6)',borderRadius:5,borderSkipped:false}] },
+    options:{responsive:true,plugins:{legend:noLegend},scales:{x:{grid:gridOpts},y:{grid:gridOpts}}}
+  });
+  new Chart(document.getElementById('doraLeadChart'), {
+    type:'line', data:{ labels:weeks, datasets:[
+      {label:'Lead Time (h)',data:[68,62,58,52,48,44,42,43],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.08)',fill:true,tension:0.4,pointRadius:3},
+      {label:'MTTR (h)',data:[12,10,9,8,6,5,5,4.2],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.05)',fill:true,tension:0.4,pointRadius:3}
+    ]},
+    options:{responsive:true,plugins:{legend:{labels:{color:'#8b96b0',boxWidth:10}}},scales:{x:{grid:gridOpts},y:{grid:gridOpts}}}
+  });
+  new Chart(document.getElementById('doraRadarChart'), {
+    type:'radar', data:{
+      labels:['Deploy Freq','Lead Time','Change Failure Rate','MTTR','Test Coverage','PR Merge Rate'],
+      datasets:[
+        {label:'iPivot',data:[95,85,90,60,78,94],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.15)',pointBackgroundColor:'#3b82f6'},
+        {label:'Industry Avg',data:[60,60,70,65,65,75],borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,0.08)',borderDash:[4,4],pointBackgroundColor:'#8b5cf6'}
+      ]
+    },
+    options:{responsive:true,plugins:{legend:{labels:{color:'#8b96b0',boxWidth:10}}},scales:{r:{grid:{color:'rgba(255,255,255,0.06)'},angleLines:{color:'rgba(255,255,255,0.06)'},ticks:{backdropColor:'transparent',color:'#4a5568'},suggestedMin:0,suggestedMax:100}}}
+  });
+}
+
+// ─── SPRINT VIEW ─────────────────────────────────────────────────────────────
+const sprintData = {
+  Backlog: [{id:'#101',name:'Search autocomplete for mobile',pts:3,dev:'SR'},{id:'#102',name:'Email digest feature',pts:5,dev:'PM'}],
+  'In Progress': [{id:'#103',name:'Dashboard API integration',pts:5,dev:'PM'},{id:'#104',name:'Role-based access control',pts:8,dev:'AK'},{id:'#105',name:'Onboarding flow redesign',pts:5,dev:'SR'}],
+  'In Review': [{id:'#106',name:'Auth token refresh flow',pts:3,dev:'AK'},{id:'#107',name:'Notification service',pts:5,dev:'RS'}],
+  Done: [{id:'#108',name:'CI/CD pipeline upgrade',pts:5,dev:'NT'},{id:'#109',name:'Mobile nav bug fix',pts:2,dev:'RS'},{id:'#110',name:'DB query optimization',pts:3,dev:'AK'}]
+};
+const colColors = {Backlog:'#4a5568','In Progress':'#f59e0b','In Review':'#3b82f6',Done:'#10b981'};
+const devColors = {AK:'#3b82f6',PM:'#8b5cf6',RS:'#10b981',NT:'#f59e0b',KP:'#ec4899',SR:'#06b6d4'};
+
+function renderSprintView() {
+  const board = document.getElementById('sprintBoard');
+  if(board.innerHTML) return;
+  board.innerHTML = Object.entries(sprintData).map(([col,tasks])=>`
+    <div>
+      <div class="sprint-col__title">${col}<span class="sprint-col__count">${tasks.length}</span></div>
+      ${tasks.map(t=>`
+        <div class="sprint-task">
+          <div class="sprint-task__id">${t.id}</div>
+          <div class="sprint-task__name">${t.name}</div>
+          <div class="sprint-task__footer">
+            <span class="sprint-task__pts">${t.pts}pts</span>
+            <div class="sprint-task__avatar" style="background:${devColors[t.dev]||'#666'}22;color:${devColors[t.dev]||'#aaa'}">${t.dev}</div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+
+  const days = ['Mar 10','Mar 11','Mar 12','Mar 13','Mar 14','Mar 17','Mar 18','Mar 19','Mar 20','Mar 21','Mar 24'];
+  new Chart(document.getElementById('burndownChart'), {
+    type:'line', data:{ labels:days, datasets:[
+      {label:'Ideal',data:[95,86,77,68,59,50,41,32,23,14,0],borderColor:'rgba(255,255,255,0.15)',borderDash:[4,4],pointRadius:0,tension:0},
+      {label:'Actual',data:[95,90,84,78,71,62,55,47,40,null,null],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.1)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#3b82f6'}
+    ]},
+    options:{responsive:true,plugins:{legend:{labels:{color:'#8b96b0',boxWidth:10}}},scales:{x:{grid:gridOpts},y:{grid:gridOpts}}}
+  });
+  new Chart(document.getElementById('labelChart'), {
+    type:'doughnut', data:{
+      labels:['Feature','Bug','Chore','Enhancement','Docs'],
+      datasets:[{data:[22,12,8,7,3],backgroundColor:['rgba(59,130,246,0.8)','rgba(239,68,68,0.8)','rgba(75,85,99,0.8)','rgba(139,92,246,0.8)','rgba(16,185,129,0.8)'],borderColor:'var(--surface-1)',borderWidth:2}]
+    },
+    options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#8b96b0',boxWidth:10,padding:14}}},cutout:'62%'}
+  });
+}
+</script>
+</body>
+</html>
