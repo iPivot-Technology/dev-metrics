@@ -2,8 +2,8 @@ name: Refresh Developer Metrics
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # Runs daily at midnight UTC
-  workflow_dispatch:        # Allow manual trigger from GitHub UI
+    - cron: '0 0 * * *'   # Daily at midnight UTC
+  workflow_dispatch:        # Manual trigger from GitHub UI
 
 permissions:
   contents: write
@@ -11,9 +11,13 @@ permissions:
 jobs:
   fetch-metrics:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          # Use GITHUB_TOKEN so the push step is authenticated
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -26,13 +30,23 @@ jobs:
       - name: Fetch GitHub Metrics
         env:
           GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
-          ORG_NAME: iPivotTechnology
+          ORG_NAME: iPivot-Technology
         run: node scripts/fetch-metrics.js
 
-      - name: Commit updated metrics data
+      - name: Show generated metrics (debug)
+        run: |
+          echo "=== metrics.json preview ==="
+          cat data/metrics.json | head -80
+
+      - name: Commit and push metrics data
         run: |
           git config user.name  "metrics-bot"
           git config user.email "metrics-bot@ipivot.tech"
           git add data/metrics.json
-          git diff --staged --quiet || git commit -m "chore: refresh metrics [skip ci]"
-          git push
+          # Only commit if there are actual changes
+          if git diff --staged --quiet; then
+            echo "No changes to metrics.json — skipping commit"
+          else
+            git commit -m "chore: refresh metrics $(date -u '+%Y-%m-%d %H:%M UTC') [skip ci]"
+            git push origin HEAD:main
+          fi
