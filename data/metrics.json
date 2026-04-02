@@ -1,30 +1,291 @@
 {
-  "generatedAt": null,
+  "generatedAt": "2026-04-02T18:48:25.404Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
-  "repos": [],
+  "repos": [
+    "dev-metrics",
+    "amigo-webapp",
+    "amigo-copilot",
+    "amigo-website",
+    "amigo-resources",
+    "amigo-api",
+    "amigo-beta",
+    "amigo-ui",
+    "ai-playbook",
+    "techlens"
+  ],
   "sprintSummary": {
-    "totalItems": 0,
-    "done": 0,
-    "inProgress": 0,
-    "inReview": 0,
-    "backlog": 0,
+    "totalItems": 189,
+    "done": 100,
+    "inProgress": 5,
+    "inReview": 4,
+    "backlog": 18,
     "currentSprint": null
   },
+  "labelSummary": [
+    {
+      "name": "enhancement",
+      "count": 14
+    },
+    {
+      "name": "testing",
+      "count": 10
+    },
+    {
+      "name": "desktop",
+      "count": 6
+    },
+    {
+      "name": "authentication",
+      "count": 6
+    },
+    {
+      "name": "feature",
+      "count": 5
+    },
+    {
+      "name": "question",
+      "count": 3
+    },
+    {
+      "name": "api",
+      "count": 3
+    },
+    {
+      "name": "validation",
+      "count": 2
+    },
+    {
+      "name": "planning",
+      "count": 2
+    },
+    {
+      "name": "content",
+      "count": 2
+    },
+    {
+      "name": "marketing",
+      "count": 2
+    },
+    {
+      "name": "mac",
+      "count": 1
+    },
+    {
+      "name": "design",
+      "count": 1
+    },
+    {
+      "name": "grooming",
+      "count": 1
+    },
+    {
+      "name": "process",
+      "count": 1
+    },
+    {
+      "name": "communication",
+      "count": 1
+    },
+    {
+      "name": "bug",
+      "count": 1
+    },
+    {
+      "name": "integration",
+      "count": 1
+    },
+    {
+      "name": "video",
+      "count": 1
+    },
+    {
+      "name": "devops",
+      "count": 1
+    },
+    {
+      "name": "deployment",
+      "count": 1
+    },
+    {
+      "name": "infrastructure",
+      "count": 1
+    },
+    {
+      "name": "persistence",
+      "count": 1
+    },
+    {
+      "name": "documentation",
+      "count": 1
+    }
+  ],
+  "velocityHistory": [],
   "team": {
-    "totalDevelopers": 0,
-    "totalTasksDone": 0,
-    "totalPRsMerged": 0,
-    "avgCycleTimeDays": 0,
-    "mergeRate": 0
+    "totalDevelopers": 7,
+    "totalTasksDone": 88,
+    "totalPRsMerged": 73,
+    "avgCycleTimeDays": 2.38,
+    "mergeRate": 98.6
   },
-  "developers": [],
+  "developers": [
+    {
+      "login": "saicharan-ipivot",
+      "name": "saicharan-ipivot",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/239390927?v=4",
+      "tasksDone": 37,
+      "tasksInProgress": 0,
+      "tasksInReview": 2,
+      "prsMerged": 49,
+      "prsOpen": 1,
+      "avgCycleTimeDays": 1.42,
+      "avgReviewTurnaroundHours": 1.4,
+      "reviewsGiven": 9,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 12130,
+      "deletions": 9600,
+      "efficiencyScore": 94,
+      "topLabels": [
+        "enhancement",
+        "testing",
+        "feature"
+      ]
+    },
+    {
+      "login": "chavan-ipivot",
+      "name": "chavan-ipivot",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/265338532?v=4",
+      "tasksDone": 27,
+      "tasksInProgress": 2,
+      "tasksInReview": 2,
+      "prsMerged": 16,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 1.09,
+      "avgReviewTurnaroundHours": 2.3,
+      "reviewsGiven": 13,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 6189,
+      "deletions": 3241,
+      "efficiencyScore": 94,
+      "topLabels": [
+        "enhancement",
+        "desktop",
+        "testing"
+      ]
+    },
+    {
+      "login": "manuipivot",
+      "name": "manuipivot",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/92286731?v=4",
+      "tasksDone": 17,
+      "tasksInProgress": 2,
+      "tasksInReview": 0,
+      "prsMerged": 3,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 1.36,
+      "avgReviewTurnaroundHours": 0,
+      "reviewsGiven": 1,
+      "bugRate": 3.3,
+      "storyPoints": 0,
+      "additions": 3804,
+      "deletions": 2702,
+      "efficiencyScore": 61,
+      "topLabels": [
+        "enhancement",
+        "api",
+        "communication"
+      ]
+    },
+    {
+      "login": "preetham-bonthula",
+      "name": "preetham-bonthula",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/270514724?v=4",
+      "tasksDone": 4,
+      "tasksInProgress": 1,
+      "tasksInReview": 0,
+      "prsMerged": 1,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 6.43,
+      "avgReviewTurnaroundHours": 6.2,
+      "reviewsGiven": 4,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 7992,
+      "deletions": 3995,
+      "efficiencyScore": 34,
+      "topLabels": []
+    },
+    {
+      "login": "satya-ip",
+      "name": "Satya Katakam",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/12886616?v=4",
+      "tasksDone": 0,
+      "tasksInProgress": 1,
+      "tasksInReview": 0,
+      "prsMerged": 4,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 1.62,
+      "avgReviewTurnaroundHours": 0,
+      "reviewsGiven": 0,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 2770,
+      "deletions": 2897,
+      "efficiencyScore": 30,
+      "topLabels": []
+    },
+    {
+      "login": "kiranipivot",
+      "name": "kiranipivot",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/113891242?u=a36cdd1bfb70a987da5e8cb8caa7559065d2ea68&v=4",
+      "tasksDone": 2,
+      "tasksInProgress": 0,
+      "tasksInReview": 0,
+      "prsMerged": 0,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 0,
+      "avgReviewTurnaroundHours": 0,
+      "reviewsGiven": 0,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 0,
+      "deletions": 0,
+      "efficiencyScore": 24,
+      "topLabels": [
+        "documentation",
+        "testing"
+      ]
+    },
+    {
+      "login": "rajipivot",
+      "name": "rajipivot",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/91166246?v=4",
+      "tasksDone": 1,
+      "tasksInProgress": 1,
+      "tasksInReview": 0,
+      "prsMerged": 0,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 0,
+      "avgReviewTurnaroundHours": 0,
+      "reviewsGiven": 0,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 0,
+      "deletions": 0,
+      "efficiencyScore": 21,
+      "topLabels": [
+        "question",
+        "content",
+        "marketing"
+      ]
+    }
+  ],
   "dora": {
-    "deploymentFrequencyPerWeek": 0,
-    "leadTimeForChangesDays": 0,
+    "deploymentFrequencyPerWeek": 17.5,
+    "leadTimeForChangesDays": 0.11,
     "changeFailureRatePct": null,
     "mttrHours": null
-  },
-  "labelSummary": [],
-  "velocityHistory": []
+  }
 }
