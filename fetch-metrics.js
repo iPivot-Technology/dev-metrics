@@ -23,16 +23,22 @@ const gql = graphql.defaults({
 // ── 1. Find the "Amigo" project ──────────────────────────────────────────────
 async function findProject() {
   const { organization } = await gql(`
-    query($org: String!, $number: Int!) {
+    query($org: String!) {
       organization(login: $org) {
-        projectV2(number: $number) {
-          id title number
+        projectsV2(first: 20) {
+          nodes { id title number }
         }
       }
-    }`, { org: ORG, number: PROJECT_NUMBER });
+    }`, { org: ORG });
 
-  const project = organization.projectV2;
-  if (!project) throw new Error(`Project #${PROJECT_NUMBER} not found in org ${ORG}`);
+  const nodes = organization.projectsV2.nodes;
+  const project =
+    nodes.find(p => p.number === PROJECT_NUMBER) ||
+    nodes.find(p => p.title.toLowerCase() === PROJECT_NAME.toLowerCase());
+  if (!project) throw new Error(
+    `Project #${PROJECT_NUMBER} ("${PROJECT_NAME}") not found in org ${ORG}. ` +
+    `Available: ${nodes.map(p => `#${p.number} ${p.title}`).join(", ")}`
+  );
   console.log(`✅  Found project: "${project.title}" (#${project.number})`);
   return project;
 }
