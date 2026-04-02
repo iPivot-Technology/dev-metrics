@@ -31,13 +31,13 @@ async function findProject() {
       }
     }`, { org: ORG });
 
-  const nodes = organization.projectsV2.nodes;
+  const nodes = (organization?.projectsV2?.nodes || []).filter(Boolean);
   const project =
     nodes.find(p => p.number === PROJECT_NUMBER) ||
     nodes.find(p => p.title.toLowerCase() === PROJECT_NAME.toLowerCase());
   if (!project) throw new Error(
     `Project #${PROJECT_NUMBER} ("${PROJECT_NAME}") not found in org ${ORG}. ` +
-    `Available: ${nodes.map(p => `#${p.number} ${p.title}`).join(", ")}`
+    `Available: ${nodes.map(p => `#${p.number} ${p.title}`).join(", ") || "none (check token scopes: repo, read:org, project)"}`
   );
   console.log(`✅  Found project: "${project.title}" (#${project.number})`);
   return project;
