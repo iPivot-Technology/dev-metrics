@@ -57,12 +57,12 @@ async function fetchProjectItems(projectId) {
                 id
                 fieldValues(first: 20) {
                   nodes {
-                    ... on ProjectV2ItemFieldTextValue         { text   field { name } }
-                    ... on ProjectV2ItemFieldSingleSelectValue { name   field { name } }
-                    ... on ProjectV2ItemFieldNumberValue       { number field { name } }
-                    ... on ProjectV2ItemFieldIterationValue    { title startDate duration field { name } }
-                    ... on ProjectV2ItemFieldDateValue         { date   field { name } }
-                    ... on ProjectV2ItemFieldUserValue         { users(first:5){ nodes{ login name } } field { name } }
+                    ... on ProjectV2ItemFieldTextValue         { text   field { ... on ProjectV2Field { name } ... on ProjectV2IterationField { name } ... on ProjectV2SingleSelectField { name } } }
+                    ... on ProjectV2ItemFieldSingleSelectValue { name   field { ... on ProjectV2Field { name } ... on ProjectV2IterationField { name } ... on ProjectV2SingleSelectField { name } } }
+                    ... on ProjectV2ItemFieldNumberValue       { number field { ... on ProjectV2Field { name } ... on ProjectV2IterationField { name } ... on ProjectV2SingleSelectField { name } } }
+                    ... on ProjectV2ItemFieldIterationValue    { title startDate duration field { ... on ProjectV2Field { name } ... on ProjectV2IterationField { name } ... on ProjectV2SingleSelectField { name } } }
+                    ... on ProjectV2ItemFieldDateValue         { date   field { ... on ProjectV2Field { name } ... on ProjectV2IterationField { name } ... on ProjectV2SingleSelectField { name } } }
+                    ... on ProjectV2ItemFieldUserValue         { users(first:5){ nodes{ login name } } field { ... on ProjectV2Field { name } ... on ProjectV2IterationField { name } ... on ProjectV2SingleSelectField { name } } }
                   }
                 }
                 content {
