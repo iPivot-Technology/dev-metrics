@@ -14,6 +14,7 @@ const path = require("path");
 
 const ORG = process.env.ORG_NAME || "iPivot-Technology";
 const PROJECT_NAME = "Amigo";
+const PROJECT_NUMBER = 2;
 
 const gql = graphql.defaults({
   headers: { authorization: `token ${process.env.GH_TOKEN}` },
@@ -22,18 +23,16 @@ const gql = graphql.defaults({
 // ── 1. Find the "Amigo" project ──────────────────────────────────────────────
 async function findProject() {
   const { organization } = await gql(`
-    query($org: String!) {
+    query($org: String!, $number: Int!) {
       organization(login: $org) {
-        projectsV2(first: 20) {
-          nodes { id title number }
+        projectV2(number: $number) {
+          id title number
         }
       }
-    }`, { org: ORG });
+    }`, { org: ORG, number: PROJECT_NUMBER });
 
-  const project = organization.projectsV2.nodes.find(
-    p => p.title.toLowerCase() === PROJECT_NAME.toLowerCase()
-  );
-  if (!project) throw new Error(`Project "${PROJECT_NAME}" not found in org ${ORG}`);
+  const project = organization.projectV2;
+  if (!project) throw new Error(`Project #${PROJECT_NUMBER} not found in org ${ORG}`);
   console.log(`✅  Found project: "${project.title}" (#${project.number})`);
   return project;
 }
@@ -350,7 +349,7 @@ function buildVelocityHistory(projectItems) {
       developers, dora,
     };
 
-    const outDir = path.join(__dirname, "..", "data");
+    const outDir = path.join(__dirname, "data");
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, "metrics.json"), JSON.stringify(output, null, 2));
 

@@ -31,7 +31,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
           ORG_NAME: iPivot-Technology
-        run: node scripts/fetch-metrics.js
+        run: node fetch-metrics.js
 
       - name: Show generated metrics (debug)
         run: |

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Developer metrics dashboard for iPivot Technology — hosted on GitHub Pages",
   "scripts": {
-    "fetch": "node scripts/fetch-metrics.js"
+    "fetch": "node fetch-metrics.js"
   },
   "dependencies": {
     "@octokit/graphql": "^8.1.1"

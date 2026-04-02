@@ -1,0 +1,30 @@
+{
+  "generatedAt": null,
+  "org": "iPivot-Technology",
+  "project": "Amigo",
+  "repos": [],
+  "sprintSummary": {
+    "totalItems": 0,
+    "done": 0,
+    "inProgress": 0,
+    "inReview": 0,
+    "backlog": 0,
+    "currentSprint": null
+  },
+  "team": {
+    "totalDevelopers": 0,
+    "totalTasksDone": 0,
+    "totalPRsMerged": 0,
+    "avgCycleTimeDays": 0,
+    "mergeRate": 0
+  },
+  "developers": [],
+  "dora": {
+    "deploymentFrequencyPerWeek": 0,
+    "leadTimeForChangesDays": 0,
+    "changeFailureRatePct": null,
+    "mttrHours": null
+  },
+  "labelSummary": [],
+  "velocityHistory": []
+}
