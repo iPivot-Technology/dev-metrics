@@ -570,6 +570,14 @@ function kpiHTML(icon, label, value, delta, deltaClass, caVar) {
 }
 
 // ─── SUMMARY TABLE ───────────────────────────────────────────────────────────
+const PROJECT_URL = 'https://github.com/orgs/iPivot-Technology/projects/2';
+function projectLink(filter, value, style) {
+  if (!value) return `<span style="color:var(--text-3)">—</span>`;
+  const q = encodeURIComponent(filter);
+  return `<a href="${PROJECT_URL}?filterQuery=${q}" target="_blank" rel="noopener"
+    style="font-family:var(--fm);text-decoration:none;border-bottom:1px dashed currentColor;${style||''}">${value}</a>`;
+}
+
 function renderSummaryTable() {
   const devs = M.developers || [];
   const ua   = M.unassigned || {};
@@ -579,28 +587,30 @@ function renderSummaryTable() {
   const getClosedYesterday = (dailyTrend) =>
     (dailyTrend || []).find(p => p.date === yesterday)?.closed || 0;
 
-  const totalAssigned      = devs.reduce((s,d)=>s+(d.totalAssigned||0),0) + (ua.totalAssigned||0);
-  const totalOpen          = devs.reduce((s,d)=>s+(d.totalOpen||0),0)     + (ua.totalOpen||0);
-  const totalClosed        = devs.reduce((s,d)=>s+(d.totalClosed||0),0)   + (ua.totalClosed||0);
-  const totalClosedYest    = devs.reduce((s,d)=>s+getClosedYesterday(d.dailyTrend),0)
-                           + getClosedYesterday(ua.dailyTrend);
+  const totalAssigned   = devs.reduce((s,d)=>s+(d.totalAssigned||0),0) + (ua.totalAssigned||0);
+  const totalOpen       = devs.reduce((s,d)=>s+(d.totalOpen||0),0)     + (ua.totalOpen||0);
+  const totalClosed     = devs.reduce((s,d)=>s+(d.totalClosed||0),0)   + (ua.totalClosed||0);
+  const totalClosedYest = devs.reduce((s,d)=>s+getClosedYesterday(d.dailyTrend),0)
+                        + getClosedYesterday(ua.dailyTrend);
 
   const reposHTML = repos => (repos||[]).map(r=>`<span class="repo-tag">${r}</span>`).join('');
+
   const rows = devs.map((d,i) => {
     const color = devColors[i % devColors.length];
     const av = d.avatarUrl
       ? `<div class="dev-avatar" style="background-image:url(${d.avatarUrl});width:26px;height:26px"></div>`
       : `<div class="dev-avatar" style="background:${color}18;color:${color};width:26px;height:26px">${initials(d.name||d.login)}</div>`;
     const cy = getClosedYesterday(d.dailyTrend);
+    const login = d.login;
     return `<tr>
       <td><div class="dev-cell">${av}<div>
         <div class="dev-name-txt">${d.name||d.login}</div>
-        <div class="dev-role-txt">@${d.login}</div>
+        <div class="dev-role-txt">@${login}</div>
       </div></div></td>
-      <td style="font-family:var(--fm);font-weight:600">${d.totalAssigned||0}</td>
-      <td style="font-family:var(--fm);color:var(--accent-4)">${d.totalOpen||0}</td>
-      <td style="font-family:var(--fm);color:var(--accent-3)">${d.totalClosed||0}</td>
-      <td style="font-family:var(--fm);color:var(--accent)">${cy > 0 ? cy : '<span style="color:var(--text-3)">—</span>'}</td>
+      <td style="font-weight:600">${projectLink(`assignee:${login}`, d.totalAssigned||0)}</td>
+      <td style="color:var(--accent-4)">${projectLink(`assignee:${login} is:open`, d.totalOpen||0, 'color:var(--accent-4)')}</td>
+      <td style="color:var(--accent-3)">${projectLink(`assignee:${login} is:closed`, d.totalClosed||0, 'color:var(--accent-3)')}</td>
+      <td style="color:var(--accent)">${cy > 0 ? projectLink(`assignee:${login} is:closed closed:${yesterday}`, cy, 'color:var(--accent)') : '<span style="color:var(--text-3)">—</span>'}</td>
       <td><div class="repo-list">${reposHTML(d.repos)}</div></td>
     </tr>`;
   });
@@ -612,20 +622,20 @@ function renderSummaryTable() {
         <div class="dev-avatar" style="background:var(--surface-2);color:var(--text-3);width:26px;height:26px;border:1px solid var(--border)">?</div>
         <div class="dev-name-txt" style="color:var(--text-2)">Unassigned</div>
       </div></td>
-      <td style="font-family:var(--fm)">${ua.totalAssigned}</td>
-      <td style="font-family:var(--fm);color:var(--accent-4)">${ua.totalOpen||0}</td>
-      <td style="font-family:var(--fm);color:var(--accent-3)">${ua.totalClosed||0}</td>
-      <td style="font-family:var(--fm);color:var(--accent)">${cy > 0 ? cy : '<span style="color:var(--text-3)">—</span>'}</td>
+      <td>${projectLink('no:assignee', ua.totalAssigned||0)}</td>
+      <td style="color:var(--accent-4)">${projectLink('no:assignee is:open', ua.totalOpen||0, 'color:var(--accent-4)')}</td>
+      <td style="color:var(--accent-3)">${projectLink('no:assignee is:closed', ua.totalClosed||0, 'color:var(--accent-3)')}</td>
+      <td style="color:var(--accent)">${cy > 0 ? projectLink(`no:assignee is:closed closed:${yesterday}`, cy, 'color:var(--accent)') : '<span style="color:var(--text-3)">—</span>'}</td>
       <td><div class="repo-list">${reposHTML(ua.repos)}</div></td>
     </tr>`);
   }
 
   rows.push(`<tr class="total-row">
     <td>Total</td>
-    <td style="font-family:var(--fm)">${totalAssigned}</td>
-    <td style="font-family:var(--fm);color:var(--accent-4)">${totalOpen}</td>
-    <td style="font-family:var(--fm);color:var(--accent-3)">${totalClosed}</td>
-    <td style="font-family:var(--fm);color:var(--accent)">${totalClosedYest > 0 ? totalClosedYest : '—'}</td>
+    <td style="font-family:var(--fm)">${projectLink('', totalAssigned)}</td>
+    <td style="font-family:var(--fm);color:var(--accent-4)">${projectLink('is:open', totalOpen, 'color:var(--accent-4)')}</td>
+    <td style="font-family:var(--fm);color:var(--accent-3)">${projectLink('is:closed', totalClosed, 'color:var(--accent-3)')}</td>
+    <td style="font-family:var(--fm);color:var(--accent)">${totalClosedYest > 0 ? projectLink(`is:closed closed:${yesterday}`, totalClosedYest, 'color:var(--accent)') : '—'}</td>
     <td></td>
   </tr>`);
 
