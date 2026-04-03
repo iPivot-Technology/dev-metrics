@@ -15,6 +15,19 @@ const path = require("path");
 const ORG = process.env.ORG_NAME || "iPivot-Technology";
 const PROJECT_NAME = "Amigo";
 const PROJECT_NUMBER = 2;
+const PROJECT_START_DATE = new Date('2025-03-10T00:00:00Z'); // sprint cadence anchor
+
+// ── Sprint calculator (2-week sprints from PROJECT_START_DATE) ────────────────
+function calcSprint(dateInput) {
+  const d = dateInput ? new Date(dateInput) : new Date();
+  const daysSince = Math.floor((d - PROJECT_START_DATE) / 86400000);
+  if (daysSince < 0) return null;
+  const num = Math.floor(daysSince / 14) + 1;
+  const start = new Date(PROJECT_START_DATE.getTime() + (num - 1) * 14 * 86400000);
+  const end   = new Date(start.getTime() + 13 * 86400000);
+  const toISO = x => x.toISOString().substring(0, 10);
+  return { number: num, name: `Sprint ${num}`, startDate: toISO(start), endDate: toISO(end) };
+}
 
 const gql = graphql.defaults({
   headers: { authorization: `token ${process.env.GH_TOKEN}` },
@@ -164,15 +177,9 @@ function crunchMetrics(projectItems, allPRs) {
 
   const unassigned = { totalAssigned: 0, totalClosed: 0, repos: new Set(), dailyOpened: {}, dailyClosed: {} };
 
-  // Detect current iteration
-  let currentIteration = null;
-  for (const item of projectItems) {
-    const f = item.fieldValues?.nodes?.find(
-      f => f.field?.name === "Iteration" || f.field?.name === "Sprint"
-    );
-    if (f?.title) { currentIteration = f.title; break; }
-  }
-  console.log(`📅  Current iteration: ${currentIteration || "N/A"}`);
+  // Current sprint from calculated cadence (2-week from project start)
+  const currentSprintInfo = calcSprint(new Date());
+  console.log(`📅  Current sprint: ${currentSprintInfo.name} (${currentSprintInfo.startDate} → ${currentSprintInfo.endDate})`);
 
   // Project items → task metrics
   for (const item of projectItems) {
@@ -185,7 +192,9 @@ function crunchMetrics(projectItems, allPRs) {
 
     const assignees = content.assignees?.nodes || (content.author ? [content.author] : []);
     const isBug = content.labels?.nodes?.some(l => l.name.toLowerCase().includes("bug"));
-    const isCurrentSprint = !currentIteration || iteration === currentIteration;
+    // Item counts as "current sprint" if: still open (in progress/review) OR closed this sprint
+    const closedDateForSprint = content.closedAt || content.mergedAt;
+    const isCurrentSprint = !isItemClosed || calcSprint(closedDateForSprint)?.number === currentSprintInfo.number;
 
     const s = status.toLowerCase();
     const isItemClosed = s.includes("done") || s.includes("closed") || s.includes("complete") ||
@@ -323,12 +332,17 @@ function crunchMetrics(projectItems, allPRs) {
       dailyTrend: buildDailyTrend(unassigned.dailyOpened, unassigned.dailyClosed),
     },
     sprintSummary: {
-      totalItems:    projectItems.length,
-      done:          allStatuses.filter(s => s.includes("done") || s.includes("complete")).length,
-      inProgress:    allStatuses.filter(s => s.includes("progress") || s.includes("doing")).length,
-      inReview:      allStatuses.filter(s => s.includes("review")).length,
-      backlog:       allStatuses.filter(s => s.includes("backlog") || s.includes("todo") || s === "").length,
-      currentSprint: currentIteration,
+      totalItems:           projectItems.length,
+      done:                 allStatuses.filter(s => s.includes("done") || s.includes("complete")).length,
+      inProgress:           allStatuses.filter(s => s.includes("progress") || s.includes("doing")).length,
+      inReview:             allStatuses.filter(s => s.includes("review")).length,
+      backlog:              allStatuses.filter(s => s.includes("backlog") || s.includes("todo") || s === "").length,
+      currentSprint:        currentSprintInfo.name,
+      currentSprintNumber:  currentSprintInfo.number,
+      currentSprintStart:   currentSprintInfo.startDate,
+      currentSprintEnd:     currentSprintInfo.endDate,
+      daysRemaining:        Math.max(0, Math.ceil((new Date(currentSprintInfo.endDate + 'T23:59:59Z') - new Date()) / 86400000)),
+      totalSprints:         currentSprintInfo.number,
     }
   };
 }
@@ -344,23 +358,27 @@ function buildLabelSummary(projectItems) {
 }
 
 function buildVelocityHistory(projectItems) {
-  const iterMap = {};
+  const sprintMap = {};
   for (const item of projectItems) {
-    const fv = item.fieldValues?.nodes || [];
-    const iter   = fv.find(f => f.field?.name === "Iteration" || f.field?.name === "Sprint");
-    const status = fv.find(f => f.field?.name === "Status")?.name || "";
+    const fv     = item.fieldValues?.nodes || [];
+    const status = (fv.find(f => f.field?.name === "Status")?.name || "").toLowerCase();
     const pts    = fv.find(f => f.field?.name === "Story Points" || f.field?.name === "Points")?.number || 0;
-    if (!iter?.title) continue;
-    if (!iterMap[iter.title]) iterMap[iter.title] = { done: 0, points: 0, start: iter.startDate };
-    if (status.toLowerCase().includes("done") || status.toLowerCase().includes("complete")) {
-      iterMap[iter.title].done++;
-      iterMap[iter.title].points += pts;
+    const content = item.content;
+    if (!content) continue;
+    const isDone = status.includes("done") || status.includes("complete") ||
+      content.state === 'CLOSED' || content.state === 'MERGED';
+    if (!isDone) continue;
+    const closedDate = content.closedAt || content.mergedAt || content.updatedAt;
+    const sprint = calcSprint(closedDate);
+    if (!sprint) continue;
+    if (!sprintMap[sprint.number]) {
+      sprintMap[sprint.number] = { number: sprint.number, name: sprint.name,
+        startDate: sprint.startDate, endDate: sprint.endDate, tasksDone: 0, pointsDone: 0 };
     }
+    sprintMap[sprint.number].tasksDone++;
+    sprintMap[sprint.number].pointsDone += pts;
   }
-  return Object.entries(iterMap)
-    .sort((a,b) => new Date(a[1].start || 0) - new Date(b[1].start || 0))
-    .slice(-6)
-    .map(([name, v]) => ({ name, tasksDone: v.done, pointsDone: v.points }));
+  return Object.values(sprintMap).sort((a, b) => a.number - b.number);
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────

@@ -310,8 +310,23 @@
     <div id="view-sprint" style="display:none">
       <div id="sprint-loading" class="state-box"><div class="spinner"></div><div>Loading sprint data…</div></div>
       <div id="sprint-content" style="display:none">
-        <div class="sec-label">Sprint Summary — Amigo Project</div>
+
+        <!-- Sprint banner -->
+        <div id="sprintBanner" class="card" style="margin-bottom:.85rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem"></div>
+
+        <div class="sec-label">Current Sprint Status</div>
         <div class="kpi-grid" id="sprintKPIs"></div>
+
+        <div class="card" style="margin-bottom:.85rem">
+          <div class="card-hdr">
+            <span class="card-title">Sprint Velocity — Tasks Closed per Sprint</span>
+            <span class="card-badge" id="sprintCountBadge"></span>
+          </div>
+          <div style="overflow-x:auto">
+            <canvas id="sprintVeloChart" height="130"></canvas>
+          </div>
+        </div>
+
         <div class="g2">
           <div class="card"><div class="card-hdr"><span class="card-title">Status Breakdown</span></div><canvas id="statusChart" height="220"></canvas></div>
           <div class="card"><div class="card-hdr"><span class="card-title">Developer Workload</span></div><canvas id="workloadChart" height="220"></canvas></div>
@@ -840,42 +855,120 @@ function renderDora() {
 }
 
 // ─── SPRINT ───────────────────────────────────────────────────────────────────
+function formatSprintDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
 function renderSprint() {
   if (document.getElementById('sprintKPIs').dataset.rendered) return;
   document.getElementById('sprint-loading').style.display='none';
   document.getElementById('sprint-content').style.display='';
   document.getElementById('sprintKPIs').dataset.rendered='1';
 
-  const s = M.sprintSummary||{};
+  const s = M.sprintSummary || {};
+
+  // ── Sprint banner ──
+  const sprintNum   = s.currentSprintNumber || '—';
+  const sprintStart = formatSprintDate(s.currentSprintStart);
+  const sprintEnd   = formatSprintDate(s.currentSprintEnd);
+  const daysLeft    = s.daysRemaining ?? '—';
+  const totalSprints = s.totalSprints || sprintNum;
+
+  document.getElementById('sprintBanner').innerHTML = `
+    <div>
+      <div style="font-family:var(--fm);font-size:.62rem;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem">Current Sprint</div>
+      <div style="font-weight:800;font-size:1.35rem;letter-spacing:-.03em;color:var(--text-1)">${s.currentSprint || 'Sprint ' + sprintNum}</div>
+      <div style="font-family:var(--fm);font-size:.72rem;color:var(--text-2);margin-top:.2rem">${sprintStart} → ${sprintEnd}</div>
+    </div>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div style="font-family:var(--fm);font-size:.6rem;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Sprint #</div>
+        <div style="font-weight:700;font-size:1.4rem;color:var(--accent)">${sprintNum}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-family:var(--fm);font-size:.6rem;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Total Sprints</div>
+        <div style="font-weight:700;font-size:1.4rem;color:var(--text-1)">${totalSprints}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-family:var(--fm);font-size:.6rem;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Days Left</div>
+        <div style="font-weight:700;font-size:1.4rem;color:${daysLeft<=3?'var(--danger)':'var(--accent-3)'}">${daysLeft}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-family:var(--fm);font-size:.6rem;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Project Start</div>
+        <div style="font-weight:600;font-size:.9rem;color:var(--text-2);margin-top:.25rem">Mar 10, 2025</div>
+      </div>
+    </div>`;
+
+  // ── KPI cards ──
   document.getElementById('sprintKPIs').innerHTML = [
-    kpiHTML('📋','TOTAL ITEMS',    s.totalItems||0,'','','var(--accent)'),
-    kpiHTML('📥','BACKLOG',        s.backlog||0,'','','var(--text-3)'),
-    kpiHTML('⚙️','IN PROGRESS',   s.inProgress||0,'','','var(--accent-4)'),
-    kpiHTML('👀','IN REVIEW',      s.inReview||0,'','','var(--accent)'),
-    kpiHTML('✅','DONE',           s.done||0,'','up','var(--accent-3)'),
+    kpiHTML('📋','TOTAL ITEMS',   s.totalItems||0, '','','var(--accent)'),
+    kpiHTML('📥','BACKLOG',       s.backlog||0,    '','','var(--text-3)'),
+    kpiHTML('⚙️','IN PROGRESS',  s.inProgress||0, '','','var(--accent-4)'),
+    kpiHTML('👀','IN REVIEW',     s.inReview||0,   '','','var(--accent)'),
+    kpiHTML('✅','DONE',          s.done||0,        '','up','var(--accent-3)'),
+    kpiHTML('🏁','SPRINT COUNT',  totalSprints,     `Since Mar 10, 2025`,'up','var(--accent-2)'),
   ].join('');
 
-  destroyChart('statusChart');
-  charts.statusChart = new Chart(document.getElementById('statusChart'),{
-    type:'doughnut',
-    data:{labels:['Done','In Progress','In Review','Backlog'],
-      datasets:[{data:[s.done||0,s.inProgress||0,s.inReview||0,s.backlog||0],
-        backgroundColor:['rgba(16,185,129,.8)','rgba(245,158,11,.8)','rgba(59,130,246,.8)','rgba(75,85,99,.5)'],
-        borderColor:'var(--surface-1)',borderWidth:2}]},
-    options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#8b96b0',boxWidth:10,padding:12}}},cutout:'58%'}
+  // ── Sprint velocity chart (all sprints) ──
+  const vh = M.velocityHistory || [];
+  document.getElementById('sprintCountBadge').textContent = `${vh.length} SPRINTS`;
+  const veloCanvas = document.getElementById('sprintVeloChart');
+  // Make canvas wide enough for all sprints (min 32px per sprint)
+  veloCanvas.style.minWidth = Math.max(600, vh.length * 38) + 'px';
+  veloCanvas.style.width    = Math.max(600, vh.length * 38) + 'px';
+
+  destroyChart('sprintVeloChart');
+  charts.sprintVeloChart = new Chart(veloCanvas, {
+    type: 'bar',
+    data: {
+      labels: vh.map(v => v.name),
+      datasets: [
+        { label:'Tasks Done', data: vh.map(v=>v.tasksDone),
+          backgroundColor: vh.map((_,i) => i === vh.length-1 ? 'rgba(37,99,235,.5)' : 'rgba(37,99,235,.75)'),
+          borderColor:      vh.map((_,i) => i === vh.length-1 ? '#2563eb' : 'transparent'),
+          borderWidth: 1, borderRadius: 4, borderSkipped: false },
+      ]
+    },
+    options: {
+      responsive: false, maintainAspectRatio: false,
+      plugins: { legend: noLegend,
+        tooltip: { callbacks: { afterLabel: ctx => {
+          const v = vh[ctx.dataIndex];
+          return v ? `Start: ${v.startDate}  End: ${v.endDate}` : '';
+        }}}
+      },
+      scales: {
+        x: { grid: gridOpts, ticks:{ maxRotation:45, font:{ size:10 } } },
+        y: { grid: gridOpts, beginAtZero: true, ticks:{ stepSize:1 } }
+      }
+    }
   });
 
+  // ── Status doughnut ──
+  destroyChart('statusChart');
+  charts.statusChart = new Chart(document.getElementById('statusChart'), {
+    type: 'doughnut',
+    data: { labels:['Done','In Progress','In Review','Backlog'],
+      datasets:[{ data:[s.done||0,s.inProgress||0,s.inReview||0,s.backlog||0],
+        backgroundColor:['rgba(5,150,105,.8)','rgba(180,83,9,.8)','rgba(37,99,235,.8)','rgba(148,163,184,.5)'],
+        borderColor:'#fff', borderWidth:2 }]},
+    options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#64748b',boxWidth:10,padding:12}}},cutout:'58%'}
+  });
+
+  // ── Developer workload ──
   const devs = (M.developers||[]).filter(d=>d.tasksDone+d.tasksInProgress+d.tasksInReview>0).slice(0,8);
   destroyChart('workloadChart');
-  charts.workloadChart = new Chart(document.getElementById('workloadChart'),{
-    type:'bar',
-    data:{labels:devs.map(d=>d.name||d.login),datasets:[
-      {label:'Done',data:devs.map(d=>d.tasksDone),backgroundColor:'rgba(16,185,129,.7)',borderRadius:4,borderSkipped:false},
-      {label:'In Progress',data:devs.map(d=>d.tasksInProgress),backgroundColor:'rgba(245,158,11,.7)',borderRadius:4,borderSkipped:false},
-      {label:'In Review',data:devs.map(d=>d.tasksInReview),backgroundColor:'rgba(59,130,246,.7)',borderRadius:4,borderSkipped:false},
+  charts.workloadChart = new Chart(document.getElementById('workloadChart'), {
+    type: 'bar',
+    data: { labels: devs.map(d=>d.name||d.login), datasets:[
+      {label:'Done',       data:devs.map(d=>d.tasksDone),       backgroundColor:'rgba(5,150,105,.7)', borderRadius:4,borderSkipped:false},
+      {label:'In Progress',data:devs.map(d=>d.tasksInProgress), backgroundColor:'rgba(180,83,9,.7)',  borderRadius:4,borderSkipped:false},
+      {label:'In Review',  data:devs.map(d=>d.tasksInReview),   backgroundColor:'rgba(37,99,235,.7)', borderRadius:4,borderSkipped:false},
     ]},
     options:{responsive:true,scales:{x:{stacked:true,grid:gridOpts},y:{stacked:true,grid:gridOpts}},
-      plugins:{legend:{labels:{color:'#8b96b0',boxWidth:10}}}}
+      plugins:{legend:{labels:{color:'#64748b',boxWidth:10}}}}
   });
 }
 
