@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-04-02T18:48:25.404Z",
+  "generatedAt": "2026-04-03T01:24:34.075Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "dev-metrics",
     "amigo-webapp",
+    "dev-metrics",
     "amigo-copilot",
     "amigo-website",
     "amigo-resources",
@@ -16,10 +16,10 @@
   ],
   "sprintSummary": {
     "totalItems": 189,
-    "done": 100,
-    "inProgress": 5,
-    "inReview": 4,
-    "backlog": 18,
+    "done": 108,
+    "inProgress": 6,
+    "inReview": 2,
+    "backlog": 16,
     "currentSprint": null
   },
   "labelSummary": [
@@ -76,6 +76,10 @@
       "count": 1
     },
     {
+      "name": "persistence",
+      "count": 1
+    },
+    {
       "name": "grooming",
       "count": 1
     },
@@ -112,10 +116,6 @@
       "count": 1
     },
     {
-      "name": "persistence",
-      "count": 1
-    },
-    {
       "name": "documentation",
       "count": 1
     }
@@ -123,7 +123,7 @@
   "velocityHistory": [],
   "team": {
     "totalDevelopers": 7,
-    "totalTasksDone": 88,
+    "totalTasksDone": 96,
     "totalPRsMerged": 73,
     "avgCycleTimeDays": 2.38,
     "mergeRate": 98.6
@@ -133,9 +133,9 @@
       "login": "saicharan-ipivot",
       "name": "saicharan-ipivot",
       "avatarUrl": "https://avatars.githubusercontent.com/u/239390927?v=4",
-      "tasksDone": 37,
-      "tasksInProgress": 0,
-      "tasksInReview": 2,
+      "tasksDone": 45,
+      "tasksInProgress": 1,
+      "tasksInReview": 0,
       "prsMerged": 49,
       "prsOpen": 1,
       "avgCycleTimeDays": 1.42,
@@ -149,7 +149,7 @@
       "topLabels": [
         "enhancement",
         "testing",
-        "feature"
+        "authentication"
       ]
     },
     {
