@@ -156,6 +156,15 @@
     .err-icon{font-size:2rem}
     .ts{font-family:var(--fm);font-size:.63rem;color:var(--text-3);margin-top:.22rem}
 
+    /* Refresh button */
+    .btn-refresh{display:flex;align-items:center;gap:.35rem;font-family:var(--fm);font-size:.65rem;
+      font-weight:500;padding:.25rem .7rem;border-radius:var(--r-full);border:1px solid var(--border);
+      background:#fff;color:var(--text-2);cursor:pointer;transition:all .12s;letter-spacing:.01em}
+    .btn-refresh:hover{color:var(--accent);border-color:var(--accent);background:rgba(37,99,235,.04)}
+    .btn-refresh:disabled{opacity:.5;cursor:not-allowed}
+    .btn-refresh svg{width:11px;height:11px;transition:transform .5s}
+    .btn-refresh.spinning svg{animation:spin .7s linear infinite}
+
     @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
     /* Trend chips */
@@ -185,6 +194,12 @@
       <div class="tb-name"><span>iPivot</span> Technology</div>
     </div>
     <div class="tb-right">
+      <button class="btn-refresh" id="refreshBtn" onclick="refreshDashboard()" title="Re-fetch metrics data">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13.5 8A5.5 5.5 0 1 1 10 3.07"/><polyline points="14 1 14 5 10 5"/>
+        </svg>
+        Refresh
+      </button>
       <div class="tb-sprint" id="sprintLabel">Loading…</div>
       <div class="badge-live">LIVE</div>
     </div>
@@ -338,6 +353,41 @@ async function loadMetrics() {
     console.warn('metrics.json not found — using sample data', e.message);
     M = getSampleData();
     initDashboard();
+  }
+}
+
+// ─── Refresh ──────────────────────────────────────────────────────────────────
+async function refreshDashboard() {
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  btn.classList.add('spinning');
+  btn.querySelector('svg').style.transform = '';
+
+  // Destroy all existing charts so they re-render cleanly
+  Object.keys(charts).forEach(k => destroyChart(k));
+  // Reset render flags
+  ['devTableBody','doraGrid','sprintKPIs'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) delete el.dataset.rendered;
+  });
+  activeTrendLogin = '__team__';
+
+  try {
+    const res = await fetch('data/metrics.json?t=' + Date.now());
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    M = await res.json();
+    initDashboard();
+    // Re-render current active view
+    const activeView = VIEWS.find(v => document.getElementById('view-'+v).style.display !== 'none') || 'overview';
+    if (activeView !== 'overview') showView(activeView);
+  } catch (e) {
+    console.warn('Refresh failed, keeping current data', e.message);
+  } finally {
+    btn.classList.remove('spinning');
+    btn.disabled = false;
+    // Brief "done" flash
+    btn.style.color = 'var(--accent-3)';
+    setTimeout(() => btn.style.color = '', 1200);
   }
 }
 
