@@ -190,15 +190,15 @@ function crunchMetrics(projectItems, allPRs) {
     const content   = item.content;
     if (!content) continue;
 
-    const assignees = content.assignees?.nodes || (content.author ? [content.author] : []);
-    const isBug = content.labels?.nodes?.some(l => l.name.toLowerCase().includes("bug"));
+    const s = status.toLowerCase();
+    const isItemClosed = s.includes("done") || s.includes("closed") || s.includes("complete") ||
+      content.state === 'CLOSED' || content.state === 'MERGED';
     // Item counts as "current sprint" if: still open (in progress/review) OR closed this sprint
     const closedDateForSprint = content.closedAt || content.mergedAt;
     const isCurrentSprint = !isItemClosed || calcSprint(closedDateForSprint)?.number === currentSprintInfo.number;
 
-    const s = status.toLowerCase();
-    const isItemClosed = s.includes("done") || s.includes("closed") || s.includes("complete") ||
-      content.state === 'CLOSED' || content.state === 'MERGED';
+    const assignees = content.assignees?.nodes || (content.author ? [content.author] : []);
+    const isBug = content.labels?.nodes?.some(l => l.name.toLowerCase().includes("bug"));
     const repoName = content?.url?.split('/')?.[4] || null;
     const openedDate = content.createdAt?.substring(0, 10);
     const closedDate = content.closedAt?.substring(0, 10);
