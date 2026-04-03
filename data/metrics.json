@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-04-03T06:44:42.232Z",
+  "generatedAt": "2026-04-03T07:34:57.449Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
     "dev-metrics",
+    "amigo-website",
     "amigo-webapp",
     "amigo-copilot",
-    "amigo-website",
     "amigo-resources",
     "amigo-api",
     "amigo-beta",
@@ -15,7 +15,7 @@
     "techlens"
   ],
   "sprintSummary": {
-    "totalItems": 189,
+    "totalItems": 208,
     "done": 109,
     "inProgress": 5,
     "inReview": 2,
@@ -30,7 +30,11 @@
   "labelSummary": [
     {
       "name": "enhancement",
-      "count": 14
+      "count": 26
+    },
+    {
+      "name": "content",
+      "count": 13
     },
     {
       "name": "testing",
@@ -65,11 +69,11 @@
       "count": 2
     },
     {
-      "name": "content",
+      "name": "marketing",
       "count": 2
     },
     {
-      "name": "marketing",
+      "name": "bug",
       "count": 2
     },
     {
@@ -94,10 +98,6 @@
     },
     {
       "name": "communication",
-      "count": 1
-    },
-    {
-      "name": "bug",
       "count": 1
     },
     {
@@ -556,8 +556,8 @@
       "tasksDone": 2,
       "tasksInProgress": 0,
       "tasksInReview": 0,
-      "totalAssigned": 3,
-      "totalOpen": 1,
+      "totalAssigned": 22,
+      "totalOpen": 20,
       "totalClosed": 2,
       "repos": [
         "amigo-copilot",
@@ -579,6 +579,11 @@
           "date": "2026-03-28",
           "opened": 1,
           "closed": 0
+        },
+        {
+          "date": "2026-04-03",
+          "opened": 19,
+          "closed": 0
         }
       ],
       "prsMerged": 0,
@@ -592,8 +597,9 @@
       "deletions": 0,
       "efficiencyScore": 24,
       "topLabels": [
-        "documentation",
-        "testing"
+        "enhancement",
+        "content",
+        "documentation"
       ]
     },
     {
