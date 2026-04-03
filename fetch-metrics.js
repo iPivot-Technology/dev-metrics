@@ -15,7 +15,7 @@ const path = require("path");
 const ORG = process.env.ORG_NAME || "iPivot-Technology";
 const PROJECT_NAME = "Amigo";
 const PROJECT_NUMBER = 2;
-const PROJECT_START_DATE = new Date('2025-03-10T00:00:00Z'); // sprint cadence anchor
+const PROJECT_START_DATE = new Date('2026-03-10T00:00:00Z'); // sprint cadence anchor
 
 // ── Sprint calculator (2-week sprints from PROJECT_START_DATE) ────────────────
 function calcSprint(dateInput) {
