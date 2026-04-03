@@ -165,6 +165,26 @@
     .btn-refresh svg{width:11px;height:11px;transition:transform .5s}
     .btn-refresh.spinning svg{animation:spin .7s linear infinite}
 
+    /* Token modal */
+    .token-overlay{position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:500;
+      display:flex;align-items:center;justify-content:center;animation:fadeUp .15s ease}
+    .token-modal{background:#fff;border-radius:var(--r-xl);padding:1.5rem;width:min(420px,92vw);
+      box-shadow:0 20px 48px rgba(15,23,42,.14);border:1px solid var(--border)}
+    .token-modal h3{font-size:.95rem;font-weight:700;color:var(--text-1);margin-bottom:.35rem}
+    .token-modal p{font-size:.78rem;color:var(--text-2);line-height:1.5;margin-bottom:1rem}
+    .token-modal p code{font-family:var(--fm);font-size:.72rem;background:var(--surface-2);
+      padding:.1rem .3rem;border-radius:3px;border:1px solid var(--border)}
+    .token-modal input{width:100%;font-family:var(--fm);font-size:.78rem;padding:.5rem .75rem;
+      border:1px solid var(--border);border-radius:var(--r-md);outline:none;color:var(--text-1);
+      background:var(--surface-2);transition:border-color .12s}
+    .token-modal input:focus{border-color:var(--accent);background:#fff}
+    .token-modal .modal-footer{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem}
+    .modal-btn{font-size:.77rem;font-weight:500;padding:.4rem .9rem;border-radius:var(--r-full);
+      cursor:pointer;transition:all .12s;border:1px solid var(--border);background:#fff;color:var(--text-2)}
+    .modal-btn:hover{border-color:rgba(15,23,42,.2);color:var(--text-1)}
+    .modal-btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .modal-btn-primary:hover{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
+
     @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
     /* Trend chips */
@@ -342,6 +362,23 @@
   </footer>
 </div>
 
+<!-- GitHub PAT modal -->
+<div id="tokenOverlay" class="token-overlay" style="display:none">
+  <div class="token-modal">
+    <h3>GitHub Token Required</h3>
+    <p>Enter a PAT with <code>workflow</code> scope to trigger the metrics pipeline.<br>
+       Saved in your browser's <code>localStorage</code> — never in the source code.<br>
+       <span style="font-size:.72rem;color:var(--text-3)">Shift+click Refresh anytime to clear the stored token.</span>
+    </p>
+    <input id="tokenInput" type="password" placeholder="ghp_…" autocomplete="off"
+      onkeydown="if(event.key==='Enter') saveTokenAndRefresh()">
+    <div class="modal-footer">
+      <button class="modal-btn" onclick="document.getElementById('tokenOverlay').style.display='none'">Cancel</button>
+      <button class="modal-btn modal-btn-primary" onclick="saveTokenAndRefresh()">Save &amp; Refresh</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ─── Chart defaults ───────────────────────────────────────────────────────────
 Chart.defaults.color = '#64748b';
@@ -384,23 +421,20 @@ function setRefreshState(label, spinning, disabled, color) {
 }
 
 async function refreshDashboard() {
-  let token = localStorage.getItem('gh_pat');
-  if (!token) {
-    token = prompt(
-      'Enter a GitHub PAT with "workflow" scope.\n' +
-      'It will be saved in your browser\'s localStorage — never sent anywhere except api.github.com.\n\n' +
-      'Tip: Shift+click the Refresh button to clear the stored token.'
-    );
-    if (!token) return;
-    localStorage.setItem('gh_pat', token.trim());
-    token = token.trim();
-  }
-
   // Shift+click clears stored token
   if (event?.shiftKey) {
     localStorage.removeItem('gh_pat');
     setRefreshState('Refresh', false, false, 'var(--accent-4)');
-    setTimeout(() => setRefreshState('Refresh', false, false, ''), 1000);
+    setTimeout(() => setRefreshState('Refresh', false, false, ''), 1200);
+    return;
+  }
+
+  const token = localStorage.getItem('gh_pat');
+  if (!token) {
+    // Show modal instead of browser prompt
+    document.getElementById('tokenInput').value = '';
+    document.getElementById('tokenOverlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('tokenInput').focus(), 50);
     return;
   }
 
@@ -423,7 +457,11 @@ async function refreshDashboard() {
 
     if (res.status === 401) {
       localStorage.removeItem('gh_pat');
-      throw new Error('Token invalid or expired — token cleared, try again.');
+      setRefreshState('Refresh', false, false, '');
+      document.getElementById('tokenInput').value = '';
+      document.getElementById('tokenOverlay').style.display = 'flex';
+      setTimeout(() => document.getElementById('tokenInput').focus(), 50);
+      return;
     }
     if (res.status === 403) throw new Error('Token missing "workflow" scope.');
     if (!res.ok) throw new Error(`GitHub API error ${res.status}`);
@@ -438,6 +476,14 @@ async function refreshDashboard() {
     setRefreshState('Refresh', false, false, 'var(--danger)');
     setTimeout(() => setRefreshState('Refresh', false, false, ''), 2000);
   }
+}
+
+function saveTokenAndRefresh() {
+  const val = document.getElementById('tokenInput').value.trim();
+  if (!val) { document.getElementById('tokenInput').focus(); return; }
+  localStorage.setItem('gh_pat', val);
+  document.getElementById('tokenOverlay').style.display = 'none';
+  refreshDashboard();
 }
 
 async function pollWorkflow(token) {
