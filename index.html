@@ -194,11 +194,11 @@
       <div class="tb-name"><span>iPivot</span> Technology</div>
     </div>
     <div class="tb-right">
-      <button class="btn-refresh" id="refreshBtn" onclick="refreshDashboard()" title="Re-fetch metrics data">
+      <button class="btn-refresh" id="refreshBtn" onclick="refreshDashboard()" title="Trigger GitHub Actions workflow + reload data">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M13.5 8A5.5 5.5 0 1 1 10 3.07"/><polyline points="14 1 14 5 10 5"/>
         </svg>
-        Refresh
+        <span id="refreshLabel">Refresh</span>
       </button>
       <div class="tb-sprint" id="sprintLabel">Loading…</div>
       <div class="badge-live">LIVE</div>
@@ -356,39 +356,118 @@ async function loadMetrics() {
   }
 }
 
-// ─── Refresh ──────────────────────────────────────────────────────────────────
-async function refreshDashboard() {
-  const btn = document.getElementById('refreshBtn');
-  btn.disabled = true;
-  btn.classList.add('spinning');
-  btn.querySelector('svg').style.transform = '';
+// ─── Refresh — triggers GitHub Actions workflow ───────────────────────────────
+const GH_REPO     = 'iPivot-Technology/dev-metrics';
+const WORKFLOW_ID = '255491633';
 
-  // Destroy all existing charts so they re-render cleanly
+function setRefreshState(label, spinning, disabled, color) {
+  const btn = document.getElementById('refreshBtn');
+  document.getElementById('refreshLabel').textContent = label;
+  btn.disabled = disabled;
+  btn.classList.toggle('spinning', spinning);
+  btn.style.color = color || '';
+}
+
+async function refreshDashboard() {
+  let token = localStorage.getItem('gh_pat');
+  if (!token) {
+    token = prompt(
+      'Enter a GitHub PAT with "workflow" scope.\n' +
+      'It will be saved in your browser\'s localStorage — never sent anywhere except api.github.com.\n\n' +
+      'Tip: Shift+click the Refresh button to clear the stored token.'
+    );
+    if (!token) return;
+    localStorage.setItem('gh_pat', token.trim());
+    token = token.trim();
+  }
+
+  // Shift+click clears stored token
+  if (event?.shiftKey) {
+    localStorage.removeItem('gh_pat');
+    setRefreshState('Refresh', false, false, 'var(--accent-4)');
+    setTimeout(() => setRefreshState('Refresh', false, false, ''), 1000);
+    return;
+  }
+
+  setRefreshState('Triggering…', true, true, '');
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/actions/workflows/${WORKFLOW_ID}/dispatches`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        body: JSON.stringify({ ref: 'main' }),
+      }
+    );
+
+    if (res.status === 401) {
+      localStorage.removeItem('gh_pat');
+      throw new Error('Token invalid or expired — token cleared, try again.');
+    }
+    if (res.status === 403) throw new Error('Token missing "workflow" scope.');
+    if (!res.ok) throw new Error(`GitHub API error ${res.status}`);
+
+    // Workflow queued — wait 4s for it to register then poll
+    setRefreshState('Running…', true, true, '');
+    await new Promise(r => setTimeout(r, 4000));
+    await pollWorkflow(token);
+
+  } catch (e) {
+    alert(`Refresh failed: ${e.message}`);
+    setRefreshState('Refresh', false, false, 'var(--danger)');
+    setTimeout(() => setRefreshState('Refresh', false, false, ''), 2000);
+  }
+}
+
+async function pollWorkflow(token) {
+  const maxAttempts = 40; // 40 × 4s = ~2.5 min timeout
+
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, 4000));
+
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/actions/workflows/${WORKFLOW_ID}/runs?per_page=1`,
+      { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' } }
+    );
+    const data = await res.json();
+    const run  = data.workflow_runs?.[0];
+
+    if (!run || run.status !== 'completed') continue;
+
+    if (run.conclusion === 'success') {
+      setRefreshState('Loading…', true, true, '');
+      await new Promise(r => setTimeout(r, 3000)); // let Pages CDN update
+      await reloadMetricsData();
+      setRefreshState('Refresh', false, false, 'var(--accent-3)');
+      setTimeout(() => setRefreshState('Refresh', false, false, ''), 1500);
+    } else {
+      throw new Error(`Workflow ended with: ${run.conclusion}`);
+    }
+    return;
+  }
+  throw new Error('Workflow timed out after 2.5 min.');
+}
+
+async function reloadMetricsData() {
   Object.keys(charts).forEach(k => destroyChart(k));
-  // Reset render flags
   ['devTableBody','doraGrid','sprintKPIs'].forEach(id => {
     const el = document.getElementById(id);
     if (el) delete el.dataset.rendered;
   });
   activeTrendLogin = '__team__';
 
-  try {
-    const res = await fetch('data/metrics.json?t=' + Date.now());
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    M = await res.json();
-    initDashboard();
-    // Re-render current active view
-    const activeView = VIEWS.find(v => document.getElementById('view-'+v).style.display !== 'none') || 'overview';
-    if (activeView !== 'overview') showView(activeView);
-  } catch (e) {
-    console.warn('Refresh failed, keeping current data', e.message);
-  } finally {
-    btn.classList.remove('spinning');
-    btn.disabled = false;
-    // Brief "done" flash
-    btn.style.color = 'var(--accent-3)';
-    setTimeout(() => btn.style.color = '', 1200);
-  }
+  const res = await fetch('data/metrics.json?t=' + Date.now());
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  M = await res.json();
+  initDashboard();
+  const active = VIEWS.find(v => document.getElementById('view-'+v).style.display !== 'none') || 'overview';
+  if (active !== 'overview') showView(active);
 }
 
 // ─── Dashboard init ───────────────────────────────────────────────────────────
