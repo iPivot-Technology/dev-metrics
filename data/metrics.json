@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-03T04:33:32.084Z",
+  "generatedAt": "2026-04-03T05:46:36.726Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
@@ -20,7 +20,12 @@
     "inProgress": 5,
     "inReview": 2,
     "backlog": 16,
-    "currentSprint": null
+    "currentSprint": "Sprint 28",
+    "currentSprintNumber": 28,
+    "currentSprintStart": "2026-03-23",
+    "currentSprintEnd": "2026-04-05",
+    "daysRemaining": 3,
+    "totalSprints": 28
   },
   "labelSummary": [
     {
@@ -120,10 +125,35 @@
       "count": 1
     }
   ],
-  "velocityHistory": [],
+  "velocityHistory": [
+    {
+      "number": 26,
+      "name": "Sprint 26",
+      "startDate": "2026-02-23",
+      "endDate": "2026-03-08",
+      "tasksDone": 2,
+      "pointsDone": 0
+    },
+    {
+      "number": 27,
+      "name": "Sprint 27",
+      "startDate": "2026-03-09",
+      "endDate": "2026-03-22",
+      "tasksDone": 10,
+      "pointsDone": 0
+    },
+    {
+      "number": 28,
+      "name": "Sprint 28",
+      "startDate": "2026-03-23",
+      "endDate": "2026-04-05",
+      "tasksDone": 97,
+      "pointsDone": 0
+    }
+  ],
   "team": {
     "totalDevelopers": 7,
-    "totalTasksDone": 98,
+    "totalTasksDone": 86,
     "totalPRsMerged": 73,
     "avgCycleTimeDays": 2.38,
     "mergeRate": 98.6
@@ -133,7 +163,7 @@
       "login": "saicharan-ipivot",
       "name": "saicharan-ipivot",
       "avatarUrl": "https://avatars.githubusercontent.com/u/239390927?v=4",
-      "tasksDone": 45,
+      "tasksDone": 38,
       "tasksInProgress": 1,
       "tasksInReview": 0,
       "totalAssigned": 55,
@@ -240,7 +270,7 @@
       "login": "chavan-ipivot",
       "name": "chavan-ipivot",
       "avatarUrl": "https://avatars.githubusercontent.com/u/265338532?v=4",
-      "tasksDone": 27,
+      "tasksDone": 26,
       "tasksInProgress": 2,
       "tasksInReview": 2,
       "totalAssigned": 52,
@@ -332,7 +362,7 @@
       "login": "manuipivot",
       "name": "manuipivot",
       "avatarUrl": "https://avatars.githubusercontent.com/u/92286731?v=4",
-      "tasksDone": 18,
+      "tasksDone": 14,
       "tasksInProgress": 1,
       "tasksInReview": 0,
       "totalAssigned": 30,
