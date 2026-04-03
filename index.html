@@ -169,6 +169,20 @@
     .ts{font-family:var(--fm);font-size:.67rem;color:var(--text-3);margin-top:.3rem}
 
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Trend chips */
+    .trend-chips{display:flex;gap:.35rem;flex-wrap:wrap;align-items:center}
+    .trend-chip{font-family:var(--fm);font-size:.68rem;padding:.22rem .65rem;border-radius:var(--r-full);
+      border:1px solid var(--border);background:transparent;color:var(--text-2);cursor:pointer;transition:all .18s;white-space:nowrap}
+    .trend-chip:hover{color:var(--text-1);border-color:rgba(255,255,255,.2)}
+    .trend-chip.active{color:#fff;border-color:transparent}
+
+    /* Summary table repos cell */
+    .repo-list{display:flex;gap:.3rem;flex-wrap:wrap}
+    .repo-tag{font-family:var(--fm);font-size:.6rem;padding:.15rem .45rem;border-radius:var(--r-sm);
+      background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap}
+    .total-row td{font-weight:700;color:var(--text-1);border-top:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.02)}
+    .unassigned-row td{color:var(--text-2);font-style:italic}
   </style>
 </head>
 <body>
@@ -207,6 +221,28 @@
       <div id="overview-content" style="display:none">
         <div class="sec-label">Key Performance Indicators</div>
         <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="sec-label" style="margin-top:.6rem">Dashboard Summary</div>
+        <div class="card" style="margin-bottom:1.1rem;padding:0;overflow-x:auto">
+          <table class="dev-table" id="summaryTable">
+            <thead><tr>
+              <th>Assignee</th><th>Total Assigned</th>
+              <th style="color:var(--accent-4)">Open</th>
+              <th style="color:var(--accent-3)">Closed</th>
+              <th>Repos</th>
+            </tr></thead>
+            <tbody id="summaryTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="sec-label">Day-wise Trends — Open &amp; Closed</div>
+        <div class="card" style="margin-bottom:1.1rem">
+          <div class="card-hdr" style="flex-wrap:wrap;gap:.6rem">
+            <span class="card-title">Issues per Day</span>
+            <div class="trend-chips" id="trendChips"></div>
+          </div>
+          <canvas id="trendChart" height="180"></canvas>
+        </div>
+
         <div class="g75">
           <div class="card">
             <div class="card-hdr"><span class="card-title">Sprint Velocity</span><span class="card-badge">LAST 6 SPRINTS</span></div>
@@ -354,6 +390,146 @@ function kpiHTML(icon, label, value, delta, deltaClass, caVar) {
   </div>`;
 }
 
+// ─── SUMMARY TABLE ───────────────────────────────────────────────────────────
+function renderSummaryTable() {
+  const devs = M.developers || [];
+  const ua   = M.unassigned || {};
+  const totalAssigned = devs.reduce((s,d)=>s+(d.totalAssigned||0),0) + (ua.totalAssigned||0);
+  const totalOpen     = devs.reduce((s,d)=>s+(d.totalOpen||0),0)     + (ua.totalOpen||0);
+  const totalClosed   = devs.reduce((s,d)=>s+(d.totalClosed||0),0)   + (ua.totalClosed||0);
+
+  const reposHTML = repos => (repos||[]).map(r=>`<span class="repo-tag">${r}</span>`).join('');
+  const rows = devs.map((d,i) => {
+    const color = devColors[i % devColors.length];
+    const av = d.avatarUrl
+      ? `<div class="dev-avatar" style="background-image:url(${d.avatarUrl});width:26px;height:26px"></div>`
+      : `<div class="dev-avatar" style="background:${color}22;color:${color};width:26px;height:26px">${initials(d.name||d.login)}</div>`;
+    return `<tr>
+      <td><div class="dev-cell">${av}<div>
+        <div class="dev-name-txt">${d.name||d.login}</div>
+        <div class="dev-role-txt">@${d.login}</div>
+      </div></div></td>
+      <td style="font-family:var(--fm);font-weight:600">${d.totalAssigned||0}</td>
+      <td style="font-family:var(--fm);color:var(--accent-4)">${d.totalOpen||0}</td>
+      <td style="font-family:var(--fm);color:var(--accent-3)">${d.totalClosed||0}</td>
+      <td><div class="repo-list">${reposHTML(d.repos)}</div></td>
+    </tr>`;
+  });
+
+  if (ua.totalAssigned > 0) {
+    rows.push(`<tr class="unassigned-row">
+      <td><div class="dev-cell">
+        <div class="dev-avatar" style="background:rgba(75,85,99,.3);color:var(--text-2);width:26px;height:26px">?</div>
+        <div class="dev-name-txt" style="color:var(--text-2)">Unassigned</div>
+      </div></td>
+      <td style="font-family:var(--fm)">${ua.totalAssigned}</td>
+      <td style="font-family:var(--fm);color:var(--accent-4)">${ua.totalOpen||0}</td>
+      <td style="font-family:var(--fm);color:var(--accent-3)">${ua.totalClosed||0}</td>
+      <td><div class="repo-list">${reposHTML(ua.repos)}</div></td>
+    </tr>`);
+  }
+
+  rows.push(`<tr class="total-row">
+    <td>Total</td>
+    <td style="font-family:var(--fm)">${totalAssigned}</td>
+    <td style="font-family:var(--fm);color:var(--accent-4)">${totalOpen}</td>
+    <td style="font-family:var(--fm);color:var(--accent-3)">${totalClosed}</td>
+    <td></td>
+  </tr>`);
+
+  document.getElementById('summaryTableBody').innerHTML = rows.join('');
+}
+
+// ─── DAY-WISE TREND CHART ────────────────────────────────────────────────────
+let activeTrendLogin = '__team__';
+
+function renderTrendChips() {
+  const devs = M.developers || [];
+  const ua   = M.unassigned;
+  const chips = [{ login:'__team__', label:'Team Total' },
+    ...devs.map(d=>({ login:d.login, label:d.name||d.login })),
+    ...(ua?.totalAssigned>0 ? [{ login:'__unassigned__', label:'Unassigned' }] : []),
+  ];
+  document.getElementById('trendChips').innerHTML = chips.map((c,i) => {
+    const color = i===0 ? 'var(--accent)' : devColors[(i-1)%devColors.length];
+    const isActive = c.login === activeTrendLogin;
+    return `<button class="trend-chip${isActive?' active':''}"
+      style="${isActive?`background:${color};border-color:${color}`:''}"
+      onclick="selectTrend('${c.login}')">${c.label}</button>`;
+  }).join('');
+}
+
+function selectTrend(login) {
+  activeTrendLogin = login;
+  renderTrendChips();
+  renderTrendChart();
+}
+
+function renderTrendChart() {
+  const devs = M.developers || [];
+  const ua   = M.unassigned;
+  let trend;
+
+  if (activeTrendLogin === '__team__') {
+    // Aggregate all developers + unassigned
+    const dayMap = {};
+    const allTrends = [...devs.map(d=>d.dailyTrend||[]), ua?.dailyTrend||[]];
+    for (const dt of allTrends) {
+      for (const p of dt) {
+        if (!dayMap[p.date]) dayMap[p.date] = { opened:0, closed:0 };
+        dayMap[p.date].opened += p.opened;
+        dayMap[p.date].closed += p.closed;
+      }
+    }
+    trend = Object.entries(dayMap).sort((a,b)=>a[0].localeCompare(b[0]))
+      .map(([date,v])=>({ date, ...v }));
+  } else if (activeTrendLogin === '__unassigned__') {
+    trend = ua?.dailyTrend || [];
+  } else {
+    trend = devs.find(d=>d.login===activeTrendLogin)?.dailyTrend || [];
+  }
+
+  const labels = trend.map(p => {
+    const d = new Date(p.date);
+    return `${d.getMonth()+1}/${d.getDate()}`;
+  });
+
+  destroyChart('trendChart');
+  charts.trendChart = new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Opened',
+          data: trend.map(p=>p.opened),
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245,158,11,.08)',
+          fill: true, tension: .35, pointRadius: 3, pointBackgroundColor: '#f59e0b',
+          borderWidth: 2,
+        },
+        {
+          label: 'Closed',
+          data: trend.map(p=>p.closed),
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16,185,129,.08)',
+          fill: true, tension: .35, pointRadius: 3, pointBackgroundColor: '#10b981',
+          borderWidth: 2,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode:'index', intersect:false },
+      plugins: { legend:{ labels:{ color:'#8b96b0', boxWidth:10 } } },
+      scales: {
+        x: { grid: gridOpts },
+        y: { grid: gridOpts, beginAtZero:true, ticks:{ stepSize:1 } }
+      }
+    }
+  });
+}
+
 // ─── OVERVIEW ────────────────────────────────────────────────────────────────
 function renderOverview() {
   const t = M.team || {};
@@ -370,6 +546,11 @@ function renderOverview() {
     kpiHTML('📦','REPOS SCANNED',  M.repos?.length||0,'All org repos','up','var(--accent)'),
     kpiHTML('✅','IN PROGRESS',    s.inProgress||0, `${s.inReview||0} in review`,'up','var(--accent-3)'),
   ].join('');
+
+  // Summary table + trend chart
+  renderSummaryTable();
+  renderTrendChips();
+  renderTrendChart();
 
   // Velocity chart
   const vh = M.velocityHistory || [];

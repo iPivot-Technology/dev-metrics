@@ -152,11 +152,17 @@ function crunchMetrics(projectItems, allPRs) {
         prsMerged: 0, prsOpen: 0,
         cycleTimes: [], reviewTurnarounds: [],
         reviewsGiven: 0, bugsFixed: 0, totalAssigned: 0,
+        totalClosed: 0,
         storyPoints: 0, additions: 0, deletions: 0, labels: {},
+        repos: new Set(),
+        dailyOpened: {},
+        dailyClosed: {},
       };
     }
     return devMap[login];
   };
+
+  const unassigned = { totalAssigned: 0, totalClosed: 0, repos: new Set(), dailyOpened: {}, dailyClosed: {} };
 
   // Detect current iteration
   let currentIteration = null;
@@ -181,13 +187,31 @@ function crunchMetrics(projectItems, allPRs) {
     const isBug = content.labels?.nodes?.some(l => l.name.toLowerCase().includes("bug"));
     const isCurrentSprint = !currentIteration || iteration === currentIteration;
 
+    const s = status.toLowerCase();
+    const isItemClosed = s.includes("done") || s.includes("closed") || s.includes("complete") ||
+      content.state === 'CLOSED' || content.state === 'MERGED';
+    const repoName = content?.url?.split('/')?.[4] || null;
+    const openedDate = content.createdAt?.substring(0, 10);
+    const closedDate = content.closedAt?.substring(0, 10);
+
+    if (assignees.length === 0) {
+      unassigned.totalAssigned++;
+      if (isItemClosed) unassigned.totalClosed++;
+      if (repoName) unassigned.repos.add(repoName);
+      if (openedDate) unassigned.dailyOpened[openedDate] = (unassigned.dailyOpened[openedDate] || 0) + 1;
+      if (closedDate) unassigned.dailyClosed[closedDate] = (unassigned.dailyClosed[closedDate] || 0) + 1;
+    }
+
     for (const a of assignees) {
       if (!a?.login) continue;
       const d = getDev(a.login, { name: a.name, avatarUrl: a.avatarUrl });
       d.totalAssigned++;
+      if (isItemClosed) d.totalClosed++;
+      if (repoName) d.repos.add(repoName);
+      if (openedDate) d.dailyOpened[openedDate] = (d.dailyOpened[openedDate] || 0) + 1;
+      if (closedDate) d.dailyClosed[closedDate] = (d.dailyClosed[closedDate] || 0) + 1;
       if (isCurrentSprint) d.storyPoints += pts;
 
-      const s = status.toLowerCase();
       if (s.includes("done") || s.includes("closed") || s.includes("complete")) {
         if (isCurrentSprint) d.tasksDone++;
         if (isBug) d.bugsFixed++;
@@ -232,6 +256,13 @@ function crunchMetrics(projectItems, allPRs) {
 
   const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 
+  const cutoffDate = new Date(Date.now() - 90 * 86400000).toISOString().substring(0, 10);
+  const buildDailyTrend = (dailyOpened, dailyClosed) => {
+    const allDates = new Set([...Object.keys(dailyOpened), ...Object.keys(dailyClosed)]);
+    return [...allDates].sort().filter(d => d >= cutoffDate)
+      .map(date => ({ date, opened: dailyOpened[date] || 0, closed: dailyClosed[date] || 0 }));
+  };
+
   const developers = Object.values(devMap)
     .filter(d => d.totalAssigned > 0 || d.prsMerged > 0)
     .map(d => {
@@ -249,6 +280,11 @@ function crunchMetrics(projectItems, allPRs) {
       return {
         login: d.login, name: d.name, avatarUrl: d.avatarUrl,
         tasksDone: d.tasksDone, tasksInProgress: d.tasksInProgress, tasksInReview: d.tasksInReview,
+        totalAssigned: d.totalAssigned,
+        totalOpen: d.totalAssigned - d.totalClosed,
+        totalClosed: d.totalClosed,
+        repos: [...d.repos].sort(),
+        dailyTrend: buildDailyTrend(d.dailyOpened, d.dailyClosed),
         prsMerged: d.prsMerged, prsOpen: d.prsOpen,
         avgCycleTimeDays: avgCycle, avgReviewTurnaroundHours: avgReview,
         reviewsGiven: d.reviewsGiven, bugRate, storyPoints: d.storyPoints,
@@ -279,6 +315,13 @@ function crunchMetrics(projectItems, allPRs) {
 
   return {
     developers, dora,
+    unassigned: {
+      totalAssigned: unassigned.totalAssigned,
+      totalOpen: unassigned.totalAssigned - unassigned.totalClosed,
+      totalClosed: unassigned.totalClosed,
+      repos: [...unassigned.repos].sort(),
+      dailyTrend: buildDailyTrend(unassigned.dailyOpened, unassigned.dailyClosed),
+    },
     sprintSummary: {
       totalItems:    projectItems.length,
       done:          allStatuses.filter(s => s.includes("done") || s.includes("complete")).length,
