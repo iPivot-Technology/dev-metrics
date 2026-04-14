@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-13T01:49:55.873Z",
+  "generatedAt": "2026-04-14T01:45:19.591Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
@@ -24,7 +24,7 @@
     "currentSprintNumber": 3,
     "currentSprintStart": "2026-04-07",
     "currentSprintEnd": "2026-04-20",
-    "daysRemaining": 8,
+    "daysRemaining": 7,
     "totalSprints": 3
   },
   "labelSummary": [
@@ -154,9 +154,9 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 9,
-    "totalPRsMerged": 127,
-    "avgCycleTimeDays": 1.27,
-    "mergeRate": 96.9
+    "totalPRsMerged": 141,
+    "avgCycleTimeDays": 1.28,
+    "mergeRate": 99.3
   },
   "developers": [
     {
@@ -255,15 +255,15 @@
           "closed": 6
         }
       ],
-      "prsMerged": 63,
-      "prsOpen": 2,
-      "avgCycleTimeDays": 2.32,
+      "prsMerged": 64,
+      "prsOpen": 1,
+      "avgCycleTimeDays": 2.29,
       "avgReviewTurnaroundHours": 2.7,
       "reviewsGiven": 18,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 13850,
-      "deletions": 10376,
+      "additions": 14198,
+      "deletions": 10561,
       "efficiencyScore": 77,
       "topLabels": [
         "enhancement",
@@ -415,16 +415,16 @@
           "closed": 1
         }
       ],
-      "prsMerged": 13,
+      "prsMerged": 19,
       "prsOpen": 0,
-      "avgCycleTimeDays": 1.65,
+      "avgCycleTimeDays": 1.36,
       "avgReviewTurnaroundHours": 6.2,
       "reviewsGiven": 4,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 30029,
-      "deletions": 11937,
-      "efficiencyScore": 53,
+      "additions": 30212,
+      "deletions": 12128,
+      "efficiencyScore": 54,
       "topLabels": []
     },
     {
@@ -470,16 +470,16 @@
           "closed": 0
         }
       ],
-      "prsMerged": 28,
-      "prsOpen": 2,
-      "avgCycleTimeDays": 0.46,
+      "prsMerged": 35,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 0.83,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 12873,
-      "deletions": 42306,
-      "efficiencyScore": 52,
+      "additions": 29183,
+      "deletions": 46993,
+      "efficiencyScore": 51,
       "topLabels": []
     },
     {
@@ -685,8 +685,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 34,
-    "leadTimeForChangesDays": 0.08,
+    "deploymentFrequencyPerWeek": 39,
+    "leadTimeForChangesDays": 0.09,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
