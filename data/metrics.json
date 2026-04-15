@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-04-14T01:45:19.591Z",
+  "generatedAt": "2026-04-15T01:27:33.778Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "amigo-webapp",
-    "amigo-api",
     "amigo-copilot",
+    "amigo-api",
+    "amigo-webapp",
     "dev-metrics",
     "amigo-website",
     "amigo-resources",
@@ -24,7 +24,7 @@
     "currentSprintNumber": 3,
     "currentSprintStart": "2026-04-07",
     "currentSprintEnd": "2026-04-20",
-    "daysRemaining": 7,
+    "daysRemaining": 6,
     "totalSprints": 3
   },
   "labelSummary": [
@@ -154,9 +154,9 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 9,
-    "totalPRsMerged": 141,
-    "avgCycleTimeDays": 1.28,
-    "mergeRate": 99.3
+    "totalPRsMerged": 146,
+    "avgCycleTimeDays": 1.3,
+    "mergeRate": 98.6
   },
   "developers": [
     {
@@ -415,16 +415,16 @@
           "closed": 1
         }
       ],
-      "prsMerged": 19,
-      "prsOpen": 0,
-      "avgCycleTimeDays": 1.36,
+      "prsMerged": 20,
+      "prsOpen": 1,
+      "avgCycleTimeDays": 1.35,
       "avgReviewTurnaroundHours": 6.2,
       "reviewsGiven": 4,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 30212,
-      "deletions": 12128,
-      "efficiencyScore": 54,
+      "additions": 30213,
+      "deletions": 12169,
+      "efficiencyScore": 55,
       "topLabels": []
     },
     {
@@ -561,16 +561,16 @@
           "closed": 1
         }
       ],
-      "prsMerged": 4,
+      "prsMerged": 8,
       "prsOpen": 0,
-      "avgCycleTimeDays": 1.02,
+      "avgCycleTimeDays": 1.1,
       "avgReviewTurnaroundHours": 0,
       "reviewsGiven": 2,
       "bugRate": 3.3,
       "storyPoints": 0,
-      "additions": 4524,
-      "deletions": 3113,
-      "efficiencyScore": 39,
+      "additions": 5980,
+      "deletions": 3825,
+      "efficiencyScore": 47,
       "topLabels": [
         "enhancement",
         "api",
@@ -685,7 +685,7 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 39,
+    "deploymentFrequencyPerWeek": 41,
     "leadTimeForChangesDays": 0.09,
     "changeFailureRatePct": null,
     "mttrHours": null
