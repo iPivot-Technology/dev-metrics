@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T01:30:03.486Z",
+  "generatedAt": "2026-04-23T01:49:21.931Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
@@ -24,7 +24,7 @@
     "currentSprintNumber": 4,
     "currentSprintStart": "2026-04-21",
     "currentSprintEnd": "2026-05-04",
-    "daysRemaining": 13,
+    "daysRemaining": 12,
     "totalSprints": 4
   },
   "labelSummary": [
@@ -154,8 +154,8 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 0,
-    "totalPRsMerged": 172,
-    "avgCycleTimeDays": 1.38,
+    "totalPRsMerged": 187,
+    "avgCycleTimeDays": 1.32,
     "mergeRate": 98.9
   },
   "developers": [
@@ -357,15 +357,15 @@
           "closed": 6
         }
       ],
-      "prsMerged": 71,
+      "prsMerged": 72,
       "prsOpen": 1,
-      "avgCycleTimeDays": 2.14,
+      "avgCycleTimeDays": 2.11,
       "avgReviewTurnaroundHours": 2.3,
       "reviewsGiven": 21,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 15298,
-      "deletions": 10607,
+      "additions": 15325,
+      "deletions": 10611,
       "efficiencyScore": 60,
       "topLabels": [
         "enhancement",
@@ -425,61 +425,6 @@
       "additions": 33556,
       "deletions": 13866,
       "efficiencyScore": 54,
-      "topLabels": []
-    },
-    {
-      "login": "satya-ip",
-      "name": "Satya Katakam",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/12886616?v=4",
-      "tasksDone": 0,
-      "tasksInProgress": 1,
-      "tasksInReview": 0,
-      "totalAssigned": 29,
-      "totalOpen": 29,
-      "totalClosed": 0,
-      "repos": [
-        "amigo-api",
-        "amigo-beta",
-        "amigo-copilot",
-        "amigo-webapp"
-      ],
-      "dailyTrend": [
-        {
-          "date": "2026-03-06",
-          "opened": 1,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-24",
-          "opened": 1,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-30",
-          "opened": 1,
-          "closed": 0
-        },
-        {
-          "date": "2026-04-01",
-          "opened": 3,
-          "closed": 0
-        },
-        {
-          "date": "2026-04-02",
-          "opened": 23,
-          "closed": 0
-        }
-      ],
-      "prsMerged": 44,
-      "prsOpen": 0,
-      "avgCycleTimeDays": 0.76,
-      "avgReviewTurnaroundHours": 5.9,
-      "reviewsGiven": 1,
-      "bugRate": 0,
-      "storyPoints": 0,
-      "additions": 38645,
-      "deletions": 51072,
-      "efficiencyScore": 51,
       "topLabels": []
     },
     {
@@ -561,21 +506,76 @@
           "closed": 1
         }
       ],
-      "prsMerged": 9,
+      "prsMerged": 13,
       "prsOpen": 0,
-      "avgCycleTimeDays": 1.05,
+      "avgCycleTimeDays": 0.75,
       "avgReviewTurnaroundHours": 0,
       "reviewsGiven": 3,
       "bugRate": 3.3,
       "storyPoints": 0,
-      "additions": 6109,
-      "deletions": 3835,
-      "efficiencyScore": 48,
+      "additions": 6475,
+      "deletions": 3905,
+      "efficiencyScore": 51,
       "topLabels": [
         "enhancement",
         "api",
         "communication"
       ]
+    },
+    {
+      "login": "satya-ip",
+      "name": "Satya Katakam",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/12886616?v=4",
+      "tasksDone": 0,
+      "tasksInProgress": 1,
+      "tasksInReview": 0,
+      "totalAssigned": 29,
+      "totalOpen": 29,
+      "totalClosed": 0,
+      "repos": [
+        "amigo-api",
+        "amigo-beta",
+        "amigo-copilot",
+        "amigo-webapp"
+      ],
+      "dailyTrend": [
+        {
+          "date": "2026-03-06",
+          "opened": 1,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-24",
+          "opened": 1,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-30",
+          "opened": 1,
+          "closed": 0
+        },
+        {
+          "date": "2026-04-01",
+          "opened": 3,
+          "closed": 0
+        },
+        {
+          "date": "2026-04-02",
+          "opened": 23,
+          "closed": 0
+        }
+      ],
+      "prsMerged": 54,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 0.79,
+      "avgReviewTurnaroundHours": 5.9,
+      "reviewsGiven": 1,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 44702,
+      "deletions": 51796,
+      "efficiencyScore": 51,
+      "topLabels": []
     },
     {
       "login": "rajipivot",
@@ -685,8 +685,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 39,
-    "leadTimeForChangesDays": 0.1,
+    "deploymentFrequencyPerWeek": 43,
+    "leadTimeForChangesDays": 0.09,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
