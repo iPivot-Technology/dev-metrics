@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-04-25T01:27:37.383Z",
+  "generatedAt": "2026-04-26T01:50:43.195Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
     "amigo-copilot",
-    "amigo-api",
-    "dev-metrics",
     "amigo-webapp",
+    "dev-metrics",
+    "amigo-api",
     "amigo-website",
     "amigo-resources",
     "amigo-beta",
@@ -24,7 +24,7 @@
     "currentSprintNumber": 4,
     "currentSprintStart": "2026-04-21",
     "currentSprintEnd": "2026-05-04",
-    "daysRemaining": 10,
+    "daysRemaining": 9,
     "totalSprints": 4
   },
   "labelSummary": [
@@ -154,8 +154,8 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 0,
-    "totalPRsMerged": 191,
-    "avgCycleTimeDays": 1.31,
+    "totalPRsMerged": 192,
+    "avgCycleTimeDays": 1.3,
     "mergeRate": 99
   },
   "developers": [
@@ -565,15 +565,15 @@
           "closed": 0
         }
       ],
-      "prsMerged": 55,
+      "prsMerged": 56,
       "prsOpen": 0,
-      "avgCycleTimeDays": 0.78,
+      "avgCycleTimeDays": 0.77,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 45762,
-      "deletions": 52009,
+      "additions": 46393,
+      "deletions": 52735,
       "efficiencyScore": 51,
       "topLabels": []
     },
@@ -685,7 +685,7 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 42.5,
+    "deploymentFrequencyPerWeek": 39,
     "leadTimeForChangesDays": 0.07,
     "changeFailureRatePct": null,
     "mttrHours": null
