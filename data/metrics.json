@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-04-26T01:50:43.195Z",
+  "generatedAt": "2026-04-27T01:54:47.672Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "amigo-copilot",
     "amigo-webapp",
+    "amigo-copilot",
     "dev-metrics",
     "amigo-api",
     "amigo-website",
@@ -24,7 +24,7 @@
     "currentSprintNumber": 4,
     "currentSprintStart": "2026-04-21",
     "currentSprintEnd": "2026-05-04",
-    "daysRemaining": 9,
+    "daysRemaining": 8,
     "totalSprints": 4
   },
   "labelSummary": [
@@ -154,8 +154,8 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 0,
-    "totalPRsMerged": 192,
-    "avgCycleTimeDays": 1.3,
+    "totalPRsMerged": 196,
+    "avgCycleTimeDays": 1.39,
     "mergeRate": 99
   },
   "developers": [
@@ -357,15 +357,15 @@
           "closed": 6
         }
       ],
-      "prsMerged": 74,
+      "prsMerged": 75,
       "prsOpen": 1,
-      "avgCycleTimeDays": 2.08,
+      "avgCycleTimeDays": 2.06,
       "avgReviewTurnaroundHours": 2.3,
       "reviewsGiven": 21,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 17229,
-      "deletions": 10953,
+      "additions": 17236,
+      "deletions": 10957,
       "efficiencyScore": 61,
       "topLabels": [
         "enhancement",
@@ -415,16 +415,16 @@
           "closed": 1
         }
       ],
-      "prsMerged": 23,
+      "prsMerged": 24,
       "prsOpen": 1,
-      "avgCycleTimeDays": 1.46,
+      "avgCycleTimeDays": 1.91,
       "avgReviewTurnaroundHours": 6.2,
       "reviewsGiven": 4,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 33556,
-      "deletions": 13866,
-      "efficiencyScore": 54,
+      "additions": 34701,
+      "deletions": 14798,
+      "efficiencyScore": 52,
       "topLabels": []
     },
     {
@@ -565,15 +565,15 @@
           "closed": 0
         }
       ],
-      "prsMerged": 56,
+      "prsMerged": 58,
       "prsOpen": 0,
-      "avgCycleTimeDays": 0.77,
+      "avgCycleTimeDays": 0.76,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 46393,
-      "deletions": 52735,
+      "additions": 47096,
+      "deletions": 53269,
       "efficiencyScore": 51,
       "topLabels": []
     },
@@ -685,8 +685,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 39,
-    "leadTimeForChangesDays": 0.07,
+    "deploymentFrequencyPerWeek": 34.5,
+    "leadTimeForChangesDays": 0.09,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
