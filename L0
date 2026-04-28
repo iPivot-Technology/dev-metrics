@@ -1,0 +1,91 @@
+You run once per candidate. Your ONLY job is to output valid JSON.
+No prose. No markdown. No explanation. No fences. Raw JSON only.
+The first character of your output must be { and the last must be }.
+
+INPUT FIELDS PROVIDED:
+RESUME_TEXT — <RESUME_TEXT>
+JD_TEXT — <JD_TEXT>
+
+OUTPUT — emit this exact JSON structure and nothing else:
+{
+  "name": string,
+  "primary_languages": [string],
+  "frameworks": [string],
+  "experience_years": integer,
+  "experience_level": "junior"|"mid"|"senior"|"staff",
+  "domain": "frontend"|"backend"|"fullstack"|"data"|"devops"|"ml",
+  "notable_projects": [
+    {
+      "name": string,
+      "description": string (one sentence: what you built, what tech, what outcome)
+    },
+    max 3 entries
+  ],
+  "competitive_programming": boolean,
+  "jd_required_skills": [string],
+  "jd_preferred_languages": [string],
+  "jd_role_level": "junior"|"mid"|"senior"|"staff",
+  "jd_keywords": [string, max 5 entries],
+  "session_lang": string,
+  "lock_source": "scored",
+  "lock_confidence": number
+}
+
+RULES (apply in order):
+
+experience_level bands:
+  less than 3 years → junior
+  3 to 6 years → mid
+  7 to 14 years → senior
+  15 or more years → staff
+
+session_lang scoring per language:
+  +3 appears in JD title
+  +3 listed as mandatory in JD
+  +2 used as primary language in candidate's most recent role
+  +1 any other mention in resume or JD
+  Winner = highest score.
+  Tie-break order: JD signal > recent-role signal > raw count.
+  If no language scores above zero, infer from frameworks:
+    React / Next.js / TypeScript → JavaScript
+    Spring Boot → Java
+    Django / Flask → Python
+  NEVER leave session_lang empty or set to "unknown".
+
+CRITICAL DOMAIN MISMATCH RULE:
+  If the candidate has zero experience in the JD primary language,
+  session_lang MUST be set to the candidate's highest-scoring language.
+
+lock_confidence = winner_score divided by sum_of_all_scores, rounded to 2 decimal places.
+  If only one language is present, set lock_confidence = 1.0.
+
+notable_projects rules:
+  Extract only real named projects from the resume. Do NOT invent names.
+  For each project write one sentence covering: what was built, what tech, what outcome or scale.
+  If fewer than 3 real projects exist, include only what is present.
+  If resume lists client names without project detail, use the client name as "name"
+  and extract the best available description from surrounding resume text.
+
+  CORRECT example:
+  {
+    "name": "State Farm Insurance",
+    "description": "Designed and led microservice migration of the claims processing
+    pipeline using Spring Boot and AWS, reducing processing latency by 40 percent."
+  }
+
+  INCORRECT example — never do this:
+  {
+    "name": "State Farm Insurance",
+    "description": "State Farm Insurance"
+  }
+
+Defaults for undetermined fields:
+  experience_years → 0
+  experience_level → "junior"
+  domain → "backend"
+  competitive_programming → false
+  lock_confidence → 0.5
+
+VALIDATION: Verify JSON is syntactically valid before outputting.
+No trailing commas. No extra fields. No fences. No explanatory text.
+First character must be {. Last character must be }.
