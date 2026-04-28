@@ -1,12 +1,13 @@
 {
-  "generatedAt": "2026-04-27T01:54:47.672Z",
+  "generatedAt": "2026-04-28T02:01:57.738Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "amigo-webapp",
+    "amigo-testing",
     "amigo-copilot",
-    "dev-metrics",
+    "amigo-webapp",
     "amigo-api",
+    "dev-metrics",
     "amigo-website",
     "amigo-resources",
     "amigo-beta",
@@ -24,7 +25,7 @@
     "currentSprintNumber": 4,
     "currentSprintStart": "2026-04-21",
     "currentSprintEnd": "2026-05-04",
-    "daysRemaining": 8,
+    "daysRemaining": 7,
     "totalSprints": 4
   },
   "labelSummary": [
@@ -154,8 +155,8 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 0,
-    "totalPRsMerged": 196,
-    "avgCycleTimeDays": 1.39,
+    "totalPRsMerged": 201,
+    "avgCycleTimeDays": 1.47,
     "mergeRate": 99
   },
   "developers": [
@@ -357,75 +358,21 @@
           "closed": 6
         }
       ],
-      "prsMerged": 75,
+      "prsMerged": 76,
       "prsOpen": 1,
-      "avgCycleTimeDays": 2.06,
+      "avgCycleTimeDays": 2.03,
       "avgReviewTurnaroundHours": 2.3,
       "reviewsGiven": 21,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 17236,
-      "deletions": 10957,
+      "additions": 17242,
+      "deletions": 10963,
       "efficiencyScore": 61,
       "topLabels": [
         "enhancement",
         "testing",
         "authentication"
       ]
-    },
-    {
-      "login": "preetham-bonthula",
-      "name": "preetham-bonthula",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/270514724?v=4",
-      "tasksDone": 0,
-      "tasksInProgress": 0,
-      "tasksInReview": 0,
-      "totalAssigned": 12,
-      "totalOpen": 7,
-      "totalClosed": 5,
-      "repos": [
-        "amigo-copilot",
-        "amigo-webapp",
-        "amigo-website"
-      ],
-      "dailyTrend": [
-        {
-          "date": "2026-03-24",
-          "opened": 4,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-30",
-          "opened": 0,
-          "closed": 3
-        },
-        {
-          "date": "2026-04-01",
-          "opened": 3,
-          "closed": 0
-        },
-        {
-          "date": "2026-04-02",
-          "opened": 5,
-          "closed": 1
-        },
-        {
-          "date": "2026-04-03",
-          "opened": 0,
-          "closed": 1
-        }
-      ],
-      "prsMerged": 24,
-      "prsOpen": 1,
-      "avgCycleTimeDays": 1.91,
-      "avgReviewTurnaroundHours": 6.2,
-      "reviewsGiven": 4,
-      "bugRate": 0,
-      "storyPoints": 0,
-      "additions": 34701,
-      "deletions": 14798,
-      "efficiencyScore": 52,
-      "topLabels": []
     },
     {
       "login": "manuipivot",
@@ -565,16 +512,70 @@
           "closed": 0
         }
       ],
-      "prsMerged": 58,
+      "prsMerged": 61,
       "prsOpen": 0,
-      "avgCycleTimeDays": 0.76,
+      "avgCycleTimeDays": 0.73,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 47096,
-      "deletions": 53269,
+      "additions": 48762,
+      "deletions": 54360,
       "efficiencyScore": 51,
+      "topLabels": []
+    },
+    {
+      "login": "preetham-bonthula",
+      "name": "preetham-bonthula",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/270514724?v=4",
+      "tasksDone": 0,
+      "tasksInProgress": 0,
+      "tasksInReview": 0,
+      "totalAssigned": 12,
+      "totalOpen": 7,
+      "totalClosed": 5,
+      "repos": [
+        "amigo-copilot",
+        "amigo-webapp",
+        "amigo-website"
+      ],
+      "dailyTrend": [
+        {
+          "date": "2026-03-24",
+          "opened": 4,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-30",
+          "opened": 0,
+          "closed": 3
+        },
+        {
+          "date": "2026-04-01",
+          "opened": 3,
+          "closed": 0
+        },
+        {
+          "date": "2026-04-02",
+          "opened": 5,
+          "closed": 1
+        },
+        {
+          "date": "2026-04-03",
+          "opened": 0,
+          "closed": 1
+        }
+      ],
+      "prsMerged": 25,
+      "prsOpen": 1,
+      "avgCycleTimeDays": 2.36,
+      "avgReviewTurnaroundHours": 6.2,
+      "reviewsGiven": 4,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 34703,
+      "deletions": 14802,
+      "efficiencyScore": 50,
       "topLabels": []
     },
     {
@@ -685,8 +686,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 34.5,
-    "leadTimeForChangesDays": 0.09,
+    "deploymentFrequencyPerWeek": 30,
+    "leadTimeForChangesDays": 0.07,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
