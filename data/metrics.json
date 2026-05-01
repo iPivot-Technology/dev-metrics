@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-04-30T02:03:19.912Z",
+  "generatedAt": "2026-05-01T02:07:13.455Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
     "amigo-testing",
     "amigo-webapp",
-    "amigo-api",
     "amigo-copilot",
+    "amigo-api",
     "dev-metrics",
     "amigo-website",
     "amigo-resources",
@@ -25,7 +25,7 @@
     "currentSprintNumber": 4,
     "currentSprintStart": "2026-04-21",
     "currentSprintEnd": "2026-05-04",
-    "daysRemaining": 5,
+    "daysRemaining": 4,
     "totalSprints": 4
   },
   "labelSummary": [
@@ -155,8 +155,8 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 0,
-    "totalPRsMerged": 216,
-    "avgCycleTimeDays": 2.14,
+    "totalPRsMerged": 219,
+    "avgCycleTimeDays": 2.13,
     "mergeRate": 99.1
   },
   "developers": [
@@ -417,15 +417,15 @@
           "closed": 0
         }
       ],
-      "prsMerged": 61,
+      "prsMerged": 64,
       "prsOpen": 0,
-      "avgCycleTimeDays": 0.73,
+      "avgCycleTimeDays": 0.7,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 48762,
-      "deletions": 54360,
+      "additions": 51289,
+      "deletions": 54609,
       "efficiencyScore": 51,
       "topLabels": []
     },
