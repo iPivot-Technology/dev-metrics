@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-01T02:07:13.455Z",
+  "generatedAt": "2026-05-02T01:54:01.290Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "amigo-testing",
     "amigo-webapp",
+    "amigo-testing",
     "amigo-copilot",
-    "amigo-api",
     "dev-metrics",
+    "amigo-api",
     "amigo-website",
     "amigo-resources",
     "amigo-beta",
@@ -25,7 +25,7 @@
     "currentSprintNumber": 4,
     "currentSprintStart": "2026-04-21",
     "currentSprintEnd": "2026-05-04",
-    "daysRemaining": 4,
+    "daysRemaining": 3,
     "totalSprints": 4
   },
   "labelSummary": [
@@ -155,9 +155,9 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 0,
-    "totalPRsMerged": 219,
-    "avgCycleTimeDays": 2.13,
-    "mergeRate": 99.1
+    "totalPRsMerged": 221,
+    "avgCycleTimeDays": 2.21,
+    "mergeRate": 99.5
   },
   "developers": [
     {
@@ -417,15 +417,15 @@
           "closed": 0
         }
       ],
-      "prsMerged": 64,
+      "prsMerged": 65,
       "prsOpen": 0,
-      "avgCycleTimeDays": 0.7,
+      "avgCycleTimeDays": 0.69,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 51289,
-      "deletions": 54609,
+      "additions": 51462,
+      "deletions": 57958,
       "efficiencyScore": 51,
       "topLabels": []
     },
@@ -566,16 +566,16 @@
           "closed": 1
         }
       ],
-      "prsMerged": 32,
-      "prsOpen": 1,
-      "avgCycleTimeDays": 3.88,
+      "prsMerged": 33,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 4.27,
       "avgReviewTurnaroundHours": 4.9,
       "reviewsGiven": 5,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 43856,
-      "deletions": 18917,
-      "efficiencyScore": 47,
+      "additions": 44125,
+      "deletions": 19021,
+      "efficiencyScore": 45,
       "topLabels": []
     },
     {
@@ -687,7 +687,7 @@
   ],
   "dora": {
     "deploymentFrequencyPerWeek": 35,
-    "leadTimeForChangesDays": 0.12,
+    "leadTimeForChangesDays": 0.14,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
