@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-04T01:58:39.148Z",
+  "generatedAt": "2026-05-05T01:59:20.435Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
@@ -21,12 +21,12 @@
     "inProgress": 5,
     "inReview": 2,
     "backlog": 12,
-    "currentSprint": "Sprint 4",
-    "currentSprintNumber": 4,
-    "currentSprintStart": "2026-04-21",
-    "currentSprintEnd": "2026-05-04",
-    "daysRemaining": 1,
-    "totalSprints": 4
+    "currentSprint": "Sprint 5",
+    "currentSprintNumber": 5,
+    "currentSprintStart": "2026-05-05",
+    "currentSprintEnd": "2026-05-18",
+    "daysRemaining": 14,
+    "totalSprints": 5
   },
   "labelSummary": [
     {
@@ -156,8 +156,8 @@
     "totalDevelopers": 7,
     "totalTasksDone": 0,
     "totalPRsMerged": 221,
-    "avgCycleTimeDays": 2.21,
-    "mergeRate": 99.1
+    "avgCycleTimeDays": 2.2,
+    "mergeRate": 98.7
   },
   "developers": [
     {
@@ -358,15 +358,15 @@
           "closed": 2
         }
       ],
-      "prsMerged": 30,
+      "prsMerged": 31,
       "prsOpen": 0,
-      "avgCycleTimeDays": 2.67,
+      "avgCycleTimeDays": 2.63,
       "avgReviewTurnaroundHours": 4.5,
       "reviewsGiven": 36,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 19589,
-      "deletions": 9948,
+      "additions": 19840,
+      "deletions": 10056,
       "efficiencyScore": 57,
       "topLabels": [
         "enhancement",
@@ -417,15 +417,15 @@
           "closed": 0
         }
       ],
-      "prsMerged": 65,
+      "prsMerged": 64,
       "prsOpen": 1,
-      "avgCycleTimeDays": 0.69,
+      "avgCycleTimeDays": 0.7,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 51462,
-      "deletions": 57958,
+      "additions": 50056,
+      "deletions": 55437,
       "efficiencyScore": 51,
       "topLabels": []
     },
@@ -567,7 +567,7 @@
         }
       ],
       "prsMerged": 33,
-      "prsOpen": 0,
+      "prsOpen": 1,
       "avgCycleTimeDays": 4.27,
       "avgReviewTurnaroundHours": 4.9,
       "reviewsGiven": 5,
@@ -686,8 +686,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 31,
-    "leadTimeForChangesDays": 0.15,
+    "deploymentFrequencyPerWeek": 30,
+    "leadTimeForChangesDays": 0.14,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
