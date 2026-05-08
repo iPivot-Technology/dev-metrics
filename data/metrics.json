@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-05-07T02:01:00.066Z",
+  "generatedAt": "2026-05-08T02:07:13.403Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "amigo-api",
-    "dev-metrics",
     "amigo-webapp",
     "amigo-copilot",
+    "dev-metrics",
+    "amigo-api",
     "amigo-testing",
     "amigo-website",
     "amigo-resources",
@@ -16,16 +16,16 @@
     "techlens"
   ],
   "sprintSummary": {
-    "totalItems": 212,
-    "done": 131,
-    "inProgress": 5,
-    "inReview": 2,
+    "totalItems": 214,
+    "done": 149,
+    "inProgress": 6,
+    "inReview": 0,
     "backlog": 12,
     "currentSprint": "Sprint 5",
     "currentSprintNumber": 5,
     "currentSprintStart": "2026-05-05",
     "currentSprintEnd": "2026-05-18",
-    "daysRemaining": 12,
+    "daysRemaining": 11,
     "totalSprints": 5
   },
   "labelSummary": [
@@ -150,16 +150,231 @@
       "endDate": "2026-04-20",
       "tasksDone": 6,
       "pointsDone": 0
+    },
+    {
+      "number": 5,
+      "name": "Sprint 5",
+      "startDate": "2026-05-05",
+      "endDate": "2026-05-18",
+      "tasksDone": 18,
+      "pointsDone": 0
     }
   ],
   "team": {
     "totalDevelopers": 7,
-    "totalTasksDone": 0,
-    "totalPRsMerged": 236,
-    "avgCycleTimeDays": 2.59,
+    "totalTasksDone": 23,
+    "totalPRsMerged": 245,
+    "avgCycleTimeDays": 2.66,
     "mergeRate": 99.2
   },
   "developers": [
+    {
+      "login": "chavan-ipivot",
+      "name": "chavan-ipivot",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/265338532?v=4",
+      "tasksDone": 18,
+      "tasksInProgress": 3,
+      "tasksInReview": 0,
+      "totalAssigned": 54,
+      "totalOpen": 6,
+      "totalClosed": 48,
+      "repos": [
+        "amigo-beta",
+        "amigo-copilot"
+      ],
+      "dailyTrend": [
+        {
+          "date": "2026-03-04",
+          "opened": 1,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-06",
+          "opened": 13,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-07",
+          "opened": 1,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-22",
+          "opened": 0,
+          "closed": 1
+        },
+        {
+          "date": "2026-03-23",
+          "opened": 3,
+          "closed": 5
+        },
+        {
+          "date": "2026-03-24",
+          "opened": 3,
+          "closed": 1
+        },
+        {
+          "date": "2026-03-27",
+          "opened": 0,
+          "closed": 4
+        },
+        {
+          "date": "2026-03-28",
+          "opened": 7,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-29",
+          "opened": 1,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-30",
+          "opened": 11,
+          "closed": 12
+        },
+        {
+          "date": "2026-04-01",
+          "opened": 10,
+          "closed": 3
+        },
+        {
+          "date": "2026-04-02",
+          "opened": 2,
+          "closed": 1
+        },
+        {
+          "date": "2026-04-03",
+          "opened": 0,
+          "closed": 1
+        },
+        {
+          "date": "2026-04-09",
+          "opened": 0,
+          "closed": 2
+        },
+        {
+          "date": "2026-05-07",
+          "opened": 2,
+          "closed": 18
+        }
+      ],
+      "prsMerged": 37,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 4.58,
+      "avgReviewTurnaroundHours": 5,
+      "reviewsGiven": 38,
+      "bugRate": 0,
+      "storyPoints": 0,
+      "additions": 24556,
+      "deletions": 21327,
+      "efficiencyScore": 79,
+      "topLabels": [
+        "enhancement",
+        "desktop",
+        "testing"
+      ]
+    },
+    {
+      "login": "manuipivot",
+      "name": "manuipivot",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/92286731?v=4",
+      "tasksDone": 5,
+      "tasksInProgress": 1,
+      "tasksInReview": 0,
+      "totalAssigned": 31,
+      "totalOpen": 7,
+      "totalClosed": 24,
+      "repos": [
+        "amigo-api",
+        "amigo-beta",
+        "amigo-copilot",
+        "amigo-resources",
+        "amigo-webapp"
+      ],
+      "dailyTrend": [
+        {
+          "date": "2026-03-04",
+          "opened": 3,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-06",
+          "opened": 3,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-07",
+          "opened": 6,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-22",
+          "opened": 0,
+          "closed": 4
+        },
+        {
+          "date": "2026-03-24",
+          "opened": 2,
+          "closed": 0
+        },
+        {
+          "date": "2026-03-27",
+          "opened": 0,
+          "closed": 1
+        },
+        {
+          "date": "2026-03-28",
+          "opened": 3,
+          "closed": 1
+        },
+        {
+          "date": "2026-03-30",
+          "opened": 3,
+          "closed": 7
+        },
+        {
+          "date": "2026-04-01",
+          "opened": 6,
+          "closed": 2
+        },
+        {
+          "date": "2026-04-02",
+          "opened": 4,
+          "closed": 2
+        },
+        {
+          "date": "2026-04-03",
+          "opened": 0,
+          "closed": 1
+        },
+        {
+          "date": "2026-04-09",
+          "opened": 0,
+          "closed": 1
+        },
+        {
+          "date": "2026-05-07",
+          "opened": 1,
+          "closed": 5
+        }
+      ],
+      "prsMerged": 24,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 1.26,
+      "avgReviewTurnaroundHours": 0.1,
+      "reviewsGiven": 4,
+      "bugRate": 3.2,
+      "storyPoints": 0,
+      "additions": 10776,
+      "deletions": 4635,
+      "efficiencyScore": 73,
+      "topLabels": [
+        "enhancement",
+        "api",
+        "communication"
+      ]
+    },
     {
       "login": "saicharan-ipivot",
       "name": "saicharan-ipivot",
@@ -167,8 +382,8 @@
       "tasksDone": 0,
       "tasksInProgress": 1,
       "tasksInReview": 0,
-      "totalAssigned": 55,
-      "totalOpen": 3,
+      "totalAssigned": 56,
+      "totalOpen": 4,
       "totalClosed": 52,
       "repos": [
         "amigo-beta",
@@ -254,124 +469,27 @@
           "date": "2026-04-09",
           "opened": 0,
           "closed": 6
+        },
+        {
+          "date": "2026-05-07",
+          "opened": 1,
+          "closed": 0
         }
       ],
-      "prsMerged": 73,
+      "prsMerged": 72,
       "prsOpen": 1,
-      "avgCycleTimeDays": 2.09,
-      "avgReviewTurnaroundHours": 2.1,
-      "reviewsGiven": 24,
+      "avgCycleTimeDays": 2.12,
+      "avgReviewTurnaroundHours": 2,
+      "reviewsGiven": 25,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 16503,
-      "deletions": 9692,
+      "additions": 16119,
+      "deletions": 9435,
       "efficiencyScore": 61,
       "topLabels": [
         "enhancement",
         "testing",
         "authentication"
-      ]
-    },
-    {
-      "login": "chavan-ipivot",
-      "name": "chavan-ipivot",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/265338532?v=4",
-      "tasksDone": 0,
-      "tasksInProgress": 2,
-      "tasksInReview": 2,
-      "totalAssigned": 52,
-      "totalOpen": 22,
-      "totalClosed": 30,
-      "repos": [
-        "amigo-beta",
-        "amigo-copilot"
-      ],
-      "dailyTrend": [
-        {
-          "date": "2026-03-04",
-          "opened": 1,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-06",
-          "opened": 13,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-07",
-          "opened": 1,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-22",
-          "opened": 0,
-          "closed": 1
-        },
-        {
-          "date": "2026-03-23",
-          "opened": 3,
-          "closed": 5
-        },
-        {
-          "date": "2026-03-24",
-          "opened": 3,
-          "closed": 1
-        },
-        {
-          "date": "2026-03-27",
-          "opened": 0,
-          "closed": 4
-        },
-        {
-          "date": "2026-03-28",
-          "opened": 7,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-29",
-          "opened": 1,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-30",
-          "opened": 11,
-          "closed": 12
-        },
-        {
-          "date": "2026-04-01",
-          "opened": 10,
-          "closed": 3
-        },
-        {
-          "date": "2026-04-02",
-          "opened": 2,
-          "closed": 1
-        },
-        {
-          "date": "2026-04-03",
-          "opened": 0,
-          "closed": 1
-        },
-        {
-          "date": "2026-04-09",
-          "opened": 0,
-          "closed": 2
-        }
-      ],
-      "prsMerged": 35,
-      "prsOpen": 0,
-      "avgCycleTimeDays": 3.92,
-      "avgReviewTurnaroundHours": 4.9,
-      "reviewsGiven": 39,
-      "bugRate": 0,
-      "storyPoints": 0,
-      "additions": 24367,
-      "deletions": 21248,
-      "efficiencyScore": 52,
-      "topLabels": [
-        "enhancement",
-        "desktop",
-        "testing"
       ]
     },
     {
@@ -430,101 +548,6 @@
       "topLabels": []
     },
     {
-      "login": "manuipivot",
-      "name": "manuipivot",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/92286731?v=4",
-      "tasksDone": 0,
-      "tasksInProgress": 1,
-      "tasksInReview": 0,
-      "totalAssigned": 30,
-      "totalOpen": 11,
-      "totalClosed": 19,
-      "repos": [
-        "amigo-api",
-        "amigo-beta",
-        "amigo-copilot",
-        "amigo-resources",
-        "amigo-webapp"
-      ],
-      "dailyTrend": [
-        {
-          "date": "2026-03-04",
-          "opened": 3,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-06",
-          "opened": 3,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-07",
-          "opened": 6,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-22",
-          "opened": 0,
-          "closed": 4
-        },
-        {
-          "date": "2026-03-24",
-          "opened": 2,
-          "closed": 0
-        },
-        {
-          "date": "2026-03-27",
-          "opened": 0,
-          "closed": 1
-        },
-        {
-          "date": "2026-03-28",
-          "opened": 3,
-          "closed": 1
-        },
-        {
-          "date": "2026-03-30",
-          "opened": 3,
-          "closed": 7
-        },
-        {
-          "date": "2026-04-01",
-          "opened": 6,
-          "closed": 2
-        },
-        {
-          "date": "2026-04-02",
-          "opened": 4,
-          "closed": 2
-        },
-        {
-          "date": "2026-04-03",
-          "opened": 0,
-          "closed": 1
-        },
-        {
-          "date": "2026-04-09",
-          "opened": 0,
-          "closed": 1
-        }
-      ],
-      "prsMerged": 25,
-      "prsOpen": 0,
-      "avgCycleTimeDays": 1.37,
-      "avgReviewTurnaroundHours": 0,
-      "reviewsGiven": 3,
-      "bugRate": 3.3,
-      "storyPoints": 0,
-      "additions": 13134,
-      "deletions": 6883,
-      "efficiencyScore": 49,
-      "topLabels": [
-        "enhancement",
-        "api",
-        "communication"
-      ]
-    },
-    {
       "login": "preetham-bonthula",
       "name": "preetham-bonthula",
       "avatarUrl": "https://avatars.githubusercontent.com/u/270514724?v=4",
@@ -566,16 +589,16 @@
           "closed": 1
         }
       ],
-      "prsMerged": 39,
+      "prsMerged": 48,
       "prsOpen": 0,
-      "avgCycleTimeDays": 4.87,
+      "avgCycleTimeDays": 4.66,
       "avgReviewTurnaroundHours": 4.1,
       "reviewsGiven": 6,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 46499,
-      "deletions": 19342,
-      "efficiencyScore": 45,
+      "additions": 49255,
+      "deletions": 22973,
+      "efficiencyScore": 46,
       "topLabels": []
     },
     {
@@ -583,7 +606,7 @@
       "name": "rajipivot",
       "avatarUrl": "https://avatars.githubusercontent.com/u/91166246?v=4",
       "tasksDone": 0,
-      "tasksInProgress": 1,
+      "tasksInProgress": 2,
       "tasksInReview": 0,
       "totalAssigned": 8,
       "totalOpen": 7,
@@ -686,8 +709,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 26.5,
-    "leadTimeForChangesDays": 0.15,
+    "deploymentFrequencyPerWeek": 32,
+    "leadTimeForChangesDays": 0.13,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
