@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-09T02:01:09.194Z",
+  "generatedAt": "2026-05-10T02:00:28.393Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
@@ -25,7 +25,7 @@
     "currentSprintNumber": 5,
     "currentSprintStart": "2026-05-05",
     "currentSprintEnd": "2026-05-18",
-    "daysRemaining": 10,
+    "daysRemaining": 9,
     "totalSprints": 5
   },
   "labelSummary": [
@@ -709,7 +709,7 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 30,
+    "deploymentFrequencyPerWeek": 29.5,
     "leadTimeForChangesDays": 0.13,
     "changeFailureRatePct": null,
     "mttrHours": null
