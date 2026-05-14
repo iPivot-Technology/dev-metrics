@@ -1,12 +1,13 @@
 {
-  "generatedAt": "2026-05-13T02:11:56.139Z",
+  "generatedAt": "2026-05-14T02:14:02.636Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "amigo-webapp",
     "amigo-copilot",
-    "dev-metrics",
+    "amigo-buddy",
     "amigo-api",
+    "dev-metrics",
+    "amigo-webapp",
     "amigo-testharness",
     "amigo-testing",
     "amigo-website",
@@ -26,7 +27,7 @@
     "currentSprintNumber": 5,
     "currentSprintStart": "2026-05-05",
     "currentSprintEnd": "2026-05-18",
-    "daysRemaining": 6,
+    "daysRemaining": 5,
     "totalSprints": 5
   },
   "labelSummary": [
@@ -164,9 +165,9 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 23,
-    "totalPRsMerged": 250,
-    "avgCycleTimeDays": 2.63,
-    "mergeRate": 99.2
+    "totalPRsMerged": 254,
+    "avgCycleTimeDays": 2.6,
+    "mergeRate": 98.4
   },
   "developers": [
     {
@@ -360,16 +361,16 @@
           "closed": 5
         }
       ],
-      "prsMerged": 26,
+      "prsMerged": 30,
       "prsOpen": 0,
-      "avgCycleTimeDays": 1.17,
+      "avgCycleTimeDays": 1.01,
       "avgReviewTurnaroundHours": 0.1,
       "reviewsGiven": 4,
       "bugRate": 3.2,
       "storyPoints": 0,
-      "additions": 10830,
-      "deletions": 4679,
-      "efficiencyScore": 73,
+      "additions": 13059,
+      "deletions": 5729,
+      "efficiencyScore": 74,
       "topLabels": [
         "enhancement",
         "api",
@@ -537,7 +538,7 @@
         }
       ],
       "prsMerged": 70,
-      "prsOpen": 1,
+      "prsOpen": 3,
       "avgCycleTimeDays": 0.56,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
@@ -710,8 +711,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 29,
-    "leadTimeForChangesDays": 0.12,
+    "deploymentFrequencyPerWeek": 25,
+    "leadTimeForChangesDays": 0.06,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
