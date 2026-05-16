@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-15T02:12:12.287Z",
+  "generatedAt": "2026-05-16T02:04:13.283Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "amigo-api",
     "amigo-copilot",
-    "amigo-buddy",
-    "dev-metrics",
     "amigo-webapp",
+    "amigo-api",
+    "dev-metrics",
+    "amigo-buddy",
     "amigo-testharness",
     "amigo-testing",
     "amigo-website",
@@ -27,7 +27,7 @@
     "currentSprintNumber": 5,
     "currentSprintStart": "2026-05-05",
     "currentSprintEnd": "2026-05-18",
-    "daysRemaining": 4,
+    "daysRemaining": 3,
     "totalSprints": 5
   },
   "labelSummary": [
@@ -711,8 +711,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 25,
-    "leadTimeForChangesDays": 0.08,
+    "deploymentFrequencyPerWeek": 24,
+    "leadTimeForChangesDays": 0.05,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
