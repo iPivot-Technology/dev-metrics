@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-16T02:04:13.283Z",
+  "generatedAt": "2026-05-17T02:08:07.536Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
+    "amigo-testharness",
     "amigo-copilot",
+    "dev-metrics",
     "amigo-webapp",
     "amigo-api",
-    "dev-metrics",
     "amigo-buddy",
-    "amigo-testharness",
     "amigo-testing",
     "amigo-website",
     "amigo-resources",
@@ -27,7 +27,7 @@
     "currentSprintNumber": 5,
     "currentSprintStart": "2026-05-05",
     "currentSprintEnd": "2026-05-18",
-    "daysRemaining": 3,
+    "daysRemaining": 2,
     "totalSprints": 5
   },
   "labelSummary": [
