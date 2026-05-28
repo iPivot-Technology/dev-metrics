@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-27T02:34:09.981Z",
+  "generatedAt": "2026-05-28T02:09:56.365Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
     "amigo-webapp",
     "amigo-copilot",
+    "dev-metrics",
     "amigo-api",
     "amigo-buddy",
-    "dev-metrics",
     "amigo-testing",
     "amigo-testharness",
     "amigo-website",
@@ -27,7 +27,7 @@
     "currentSprintNumber": 6,
     "currentSprintStart": "2026-05-19",
     "currentSprintEnd": "2026-06-01",
-    "daysRemaining": 6,
+    "daysRemaining": 5,
     "totalSprints": 6
   },
   "labelSummary": [
@@ -173,9 +173,9 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 2,
-    "totalPRsMerged": 287,
-    "avgCycleTimeDays": 3.92,
-    "mergeRate": 99
+    "totalPRsMerged": 295,
+    "avgCycleTimeDays": 4.3,
+    "mergeRate": 98.7
   },
   "developers": [
     {
@@ -551,15 +551,15 @@
           "closed": 18
         }
       ],
-      "prsMerged": 34,
-      "prsOpen": 2,
-      "avgCycleTimeDays": 10.26,
+      "prsMerged": 35,
+      "prsOpen": 1,
+      "avgCycleTimeDays": 11.24,
       "avgReviewTurnaroundHours": 6.3,
       "reviewsGiven": 27,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 30815,
-      "deletions": 20580,
+      "additions": 31594,
+      "deletions": 20583,
       "efficiencyScore": 47,
       "topLabels": [
         "enhancement",
@@ -609,16 +609,16 @@
           "closed": 1
         }
       ],
-      "prsMerged": 56,
-      "prsOpen": 0,
-      "avgCycleTimeDays": 4.81,
+      "prsMerged": 63,
+      "prsOpen": 2,
+      "avgCycleTimeDays": 5.72,
       "avgReviewTurnaroundHours": 0,
       "reviewsGiven": 3,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 54785,
-      "deletions": 25372,
-      "efficiencyScore": 35,
+      "additions": 55700,
+      "deletions": 26251,
+      "efficiencyScore": 34,
       "topLabels": []
     },
     {
@@ -729,8 +729,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 27.5,
-    "leadTimeForChangesDays": 0.33,
+    "deploymentFrequencyPerWeek": 29.5,
+    "leadTimeForChangesDays": 0.32,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
