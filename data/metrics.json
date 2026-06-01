@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-31T02:34:59.969Z",
+  "generatedAt": "2026-06-01T02:44:15.428Z",
   "org": "iPivot-Technology",
   "project": "Amigo",
   "repos": [
-    "amigo-copilot",
+    "amigo-api",
     "amigo-webapp",
     "dev-metrics",
+    "amigo-copilot",
     "hexara",
-    "amigo-api",
     "amigo-buddy",
     "amigo-testing",
     "amigo-testharness",
@@ -28,7 +28,7 @@
     "currentSprintNumber": 6,
     "currentSprintStart": "2026-05-19",
     "currentSprintEnd": "2026-06-01",
-    "daysRemaining": 2,
+    "daysRemaining": 1,
     "totalSprints": 6
   },
   "labelSummary": [
@@ -174,9 +174,9 @@
   "team": {
     "totalDevelopers": 7,
     "totalTasksDone": 2,
-    "totalPRsMerged": 308,
-    "avgCycleTimeDays": 4.29,
-    "mergeRate": 99
+    "totalPRsMerged": 313,
+    "avgCycleTimeDays": 4.3,
+    "mergeRate": 99.4
   },
   "developers": [
     {
@@ -385,15 +385,15 @@
           "closed": 1
         }
       ],
-      "prsMerged": 45,
+      "prsMerged": 50,
       "prsOpen": 0,
-      "avgCycleTimeDays": 1.59,
+      "avgCycleTimeDays": 1.6,
       "avgReviewTurnaroundHours": 2.3,
       "reviewsGiven": 7,
       "bugRate": 3.2,
       "storyPoints": 0,
-      "additions": 26669,
-      "deletions": 11485,
+      "additions": 31055,
+      "deletions": 12457,
       "efficiencyScore": 64,
       "topLabels": [
         "enhancement",
@@ -450,14 +450,14 @@
         }
       ],
       "prsMerged": 106,
-      "prsOpen": 1,
-      "avgCycleTimeDays": 1.19,
+      "prsOpen": 0,
+      "avgCycleTimeDays": 1.22,
       "avgReviewTurnaroundHours": 5.9,
       "reviewsGiven": 1,
       "bugRate": 0,
       "storyPoints": 0,
-      "additions": 72837,
-      "deletions": 62201,
+      "additions": 73394,
+      "deletions": 62171,
       "efficiencyScore": 52,
       "topLabels": []
     },
@@ -730,8 +730,8 @@
     }
   ],
   "dora": {
-    "deploymentFrequencyPerWeek": 40,
-    "leadTimeForChangesDays": 0.24,
+    "deploymentFrequencyPerWeek": 43,
+    "leadTimeForChangesDays": 0.23,
     "changeFailureRatePct": null,
     "mttrHours": null
   }
